@@ -352,6 +352,29 @@ export interface Database {
           last_accessed?: string;
         };
       };
+      user_roles: {
+        Row: {
+          id: string;
+          user_id: string;
+          role: 'admin' | 'instructor' | 'student';
+          created_at: string;
+          assigned_by: string | null;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          role?: 'admin' | 'instructor' | 'student';
+          created_at?: string;
+          assigned_by?: string | null;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          role?: 'admin' | 'instructor' | 'student';
+          created_at?: string;
+          assigned_by?: string | null;
+        };
+      };
     };
   };
 }
@@ -467,3 +490,13 @@ export interface CourseWithDetails extends Course {
   enrollment?: CourseEnrollment;
   moduleProgress?: UserModuleProgress[];
 }
+
+export interface UserRole {
+  id: string;
+  user_id: string;
+  role: 'admin' | 'instructor' | 'student';
+  created_at: string;
+  assigned_by: string | null;
+}
+
+export type UserRoleType = 'admin' | 'instructor' | 'student';
