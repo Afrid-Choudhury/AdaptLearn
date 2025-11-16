@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { BookOpen, User, Target, Clock, TrendingUp, Award, LogOut, CheckCircle, Play } from 'lucide-react';
+import { BookOpen, User, Target, Clock, TrendingUp, Award, LogOut, CheckCircle, Play, Settings } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useProfile } from '../hooks/useProfile';
 import { useEnrollments } from '../hooks/useEnrollments';
+import { useUserRole } from '../hooks/useUserRole';
 import { supabase } from '../lib/supabase';
 import { Course } from '../lib/database.types';
 
@@ -11,6 +12,7 @@ export default function Dashboard() {
   const { user, signOut } = useAuth();
   const { profile, loading } = useProfile();
   const { enrollments, loading: enrollmentsLoading } = useEnrollments();
+  const { isAdminOrInstructor } = useUserRole();
   const navigate = useNavigate();
   const [assessmentResult, setAssessmentResult] = useState<any>(null);
   const [loadingAssessment, setLoadingAssessment] = useState(true);
@@ -139,13 +141,24 @@ export default function Dashboard() {
               <BookOpen className="w-7 h-7" />
               AdaptLearn
             </Link>
-            <button
-              onClick={handleSignOut}
-              className="flex items-center gap-2 text-gray-700 hover:text-red-600 font-semibold transition-colors"
-            >
-              <LogOut className="w-5 h-5" />
-              Sign Out
-            </button>
+            <div className="flex items-center gap-4">
+              {isAdminOrInstructor && (
+                <Link
+                  to="/admin"
+                  className="flex items-center gap-2 text-gray-700 hover:text-blue-600 font-semibold transition-colors"
+                >
+                  <Settings className="w-5 h-5" />
+                  Admin
+                </Link>
+              )}
+              <button
+                onClick={handleSignOut}
+                className="flex items-center gap-2 text-gray-700 hover:text-red-600 font-semibold transition-colors"
+              >
+                <LogOut className="w-5 h-5" />
+                Sign Out
+              </button>
+            </div>
           </div>
         </div>
       </nav>
