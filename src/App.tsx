@@ -6,6 +6,7 @@ import SignUp from './pages/SignUp';
 import Assessment from './pages/Assessment';
 import AssessmentResults from './pages/AssessmentResults';
 import Courses from './pages/Courses';
+import CourseDetail from './pages/CourseDetail';
 import Dashboard from './pages/Dashboard';
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/assessment" element={<Assessment />} />
           <Route path="/assessment/results" element={<AssessmentResults />} />
           <Route path="/courses" element={<Courses />} />
+          <Route path="/courses/:courseId" element={<CourseDetail />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

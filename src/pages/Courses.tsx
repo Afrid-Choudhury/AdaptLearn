@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { BookOpen, Clock, Users, Star, Award, TrendingUp } from 'lucide-react';
+import { BookOpen, Clock, Users, Star, Award, TrendingUp, CheckCircle } from 'lucide-react';
 import { useCourses } from '../hooks/useCourses';
 import { useAuth } from '../contexts/AuthContext';
 import { useProfile } from '../hooks/useProfile';
+import { useEnrollments } from '../hooks/useEnrollments';
 
 export default function Courses() {
   const location = useLocation();
@@ -11,6 +12,7 @@ export default function Courses() {
   const { user } = useAuth();
   const { profile } = useProfile();
   const { courses, loading } = useCourses();
+  const { isEnrolled } = useEnrollments();
 
   useEffect(() => {
     if (!user) {
@@ -137,9 +139,27 @@ export default function Courses() {
                 </div>
               )}
 
-              <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition-all transform hover:scale-105">
-                Start Learning
-              </button>
+              {isEnrolled(recommendedCourse.id) ? (
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2 text-green-600 font-semibold">
+                    <CheckCircle className="w-5 h-5" />
+                    <span>Enrolled</span>
+                  </div>
+                  <Link
+                    to={`/courses/${recommendedCourse.id}`}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition-all transform hover:scale-105"
+                  >
+                    Continue Learning
+                  </Link>
+                </div>
+              ) : (
+                <Link
+                  to={`/courses/${recommendedCourse.id}`}
+                  className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition-all transform hover:scale-105"
+                >
+                  View Course
+                </Link>
+              )}
             </div>
           </div>
         )}
@@ -171,9 +191,20 @@ export default function Courses() {
                     </div>
                   </div>
 
-                  <button className="text-blue-600 hover:text-blue-700 font-semibold transition-colors">
-                    View Details
-                  </button>
+                  <div className="flex items-center justify-between">
+                    {isEnrolled(course.id) && (
+                      <div className="flex items-center gap-2 text-green-600 font-semibold text-sm">
+                        <CheckCircle className="w-4 h-4" />
+                        <span>Enrolled</span>
+                      </div>
+                    )}
+                    <Link
+                      to={`/courses/${course.id}`}
+                      className="text-blue-600 hover:text-blue-700 font-semibold transition-colors"
+                    >
+                      View Details
+                    </Link>
+                  </div>
                 </div>
               ))}
             </div>

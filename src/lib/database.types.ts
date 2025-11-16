@@ -183,6 +183,175 @@ export interface Database {
           created_at?: string;
         };
       };
+      course_enrollments: {
+        Row: {
+          id: string;
+          user_id: string;
+          course_id: string;
+          status: 'active' | 'completed' | 'dropped';
+          enrolled_at: string;
+          completed_at: string | null;
+          last_accessed: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          course_id: string;
+          status?: 'active' | 'completed' | 'dropped';
+          enrolled_at?: string;
+          completed_at?: string | null;
+          last_accessed?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          course_id?: string;
+          status?: 'active' | 'completed' | 'dropped';
+          enrolled_at?: string;
+          completed_at?: string | null;
+          last_accessed?: string;
+        };
+      };
+      course_modules: {
+        Row: {
+          id: string;
+          course_id: string;
+          title: string;
+          description: string | null;
+          order_index: number;
+          estimated_minutes: number;
+          learning_objectives: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          course_id: string;
+          title: string;
+          description?: string | null;
+          order_index: number;
+          estimated_minutes?: number;
+          learning_objectives?: Json;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          course_id?: string;
+          title?: string;
+          description?: string | null;
+          order_index?: number;
+          estimated_minutes?: number;
+          learning_objectives?: Json;
+          created_at?: string;
+        };
+      };
+      course_lessons: {
+        Row: {
+          id: string;
+          module_id: string;
+          title: string;
+          description: string | null;
+          order_index: number;
+          estimated_minutes: number;
+          content_type: 'video' | 'reading' | 'exercise' | 'quiz';
+          content_url: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          module_id: string;
+          title: string;
+          description?: string | null;
+          order_index: number;
+          estimated_minutes?: number;
+          content_type?: 'video' | 'reading' | 'exercise' | 'quiz';
+          content_url?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          module_id?: string;
+          title?: string;
+          description?: string | null;
+          order_index?: number;
+          estimated_minutes?: number;
+          content_type?: 'video' | 'reading' | 'exercise' | 'quiz';
+          content_url?: string | null;
+          created_at?: string;
+        };
+      };
+      user_module_progress: {
+        Row: {
+          id: string;
+          user_id: string;
+          module_id: string;
+          enrollment_id: string;
+          status: 'not_started' | 'in_progress' | 'completed';
+          completed_lessons: number;
+          total_lessons: number;
+          started_at: string | null;
+          completed_at: string | null;
+          last_accessed: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          module_id: string;
+          enrollment_id: string;
+          status?: 'not_started' | 'in_progress' | 'completed';
+          completed_lessons?: number;
+          total_lessons?: number;
+          started_at?: string | null;
+          completed_at?: string | null;
+          last_accessed?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          module_id?: string;
+          enrollment_id?: string;
+          status?: 'not_started' | 'in_progress' | 'completed';
+          completed_lessons?: number;
+          total_lessons?: number;
+          started_at?: string | null;
+          completed_at?: string | null;
+          last_accessed?: string;
+        };
+      };
+      user_lesson_progress: {
+        Row: {
+          id: string;
+          user_id: string;
+          lesson_id: string;
+          module_progress_id: string;
+          completed: boolean;
+          time_spent_minutes: number;
+          started_at: string | null;
+          completed_at: string | null;
+          last_accessed: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          lesson_id: string;
+          module_progress_id: string;
+          completed?: boolean;
+          time_spent_minutes?: number;
+          started_at?: string | null;
+          completed_at?: string | null;
+          last_accessed?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          lesson_id?: string;
+          module_progress_id?: string;
+          completed?: boolean;
+          time_spent_minutes?: number;
+          started_at?: string | null;
+          completed_at?: string | null;
+          last_accessed?: string;
+        };
+      };
     };
   };
 }
@@ -221,4 +390,80 @@ export interface Course {
       lessons: string[];
     }[];
   } | null;
+  prerequisites?: string[];
+  learning_objectives?: string[];
+}
+
+export interface CourseModule {
+  id: string;
+  course_id: string;
+  title: string;
+  description: string | null;
+  order_index: number;
+  estimated_minutes: number;
+  learning_objectives: string[];
+  created_at: string;
+}
+
+export interface CourseLesson {
+  id: string;
+  module_id: string;
+  title: string;
+  description: string | null;
+  order_index: number;
+  estimated_minutes: number;
+  content_type: 'video' | 'reading' | 'exercise' | 'quiz';
+  content_url: string | null;
+  created_at: string;
+}
+
+export interface CourseEnrollment {
+  id: string;
+  user_id: string;
+  course_id: string;
+  status: 'active' | 'completed' | 'dropped';
+  enrolled_at: string;
+  completed_at: string | null;
+  last_accessed: string;
+}
+
+export interface UserModuleProgress {
+  id: string;
+  user_id: string;
+  module_id: string;
+  enrollment_id: string;
+  status: 'not_started' | 'in_progress' | 'completed';
+  completed_lessons: number;
+  total_lessons: number;
+  started_at: string | null;
+  completed_at: string | null;
+  last_accessed: string;
+}
+
+export interface UserLessonProgress {
+  id: string;
+  user_id: string;
+  lesson_id: string;
+  module_progress_id: string;
+  completed: boolean;
+  time_spent_minutes: number;
+  started_at: string | null;
+  completed_at: string | null;
+  last_accessed: string;
+}
+
+export interface ModuleWithLessons extends CourseModule {
+  lessons: CourseLesson[];
+}
+
+export interface ModuleWithProgress extends CourseModule {
+  lessons: CourseLesson[];
+  progress?: UserModuleProgress;
+  lessonProgress?: UserLessonProgress[];
+}
+
+export interface CourseWithDetails extends Course {
+  modules: ModuleWithLessons[];
+  enrollment?: CourseEnrollment;
+  moduleProgress?: UserModuleProgress[];
 }
