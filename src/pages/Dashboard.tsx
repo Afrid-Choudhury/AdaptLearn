@@ -1,16 +1,20 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { BookOpen, User, Target, Clock, TrendingUp, Award, LogOut, CheckCircle } from 'lucide-react';
+import { BookOpen, User, Target, Clock, TrendingUp, Award, LogOut, CheckCircle, Play } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useProfile } from '../hooks/useProfile';
+import { useEnrollments } from '../hooks/useEnrollments';
 import { supabase } from '../lib/supabase';
+import { Course } from '../lib/database.types';
 
 export default function Dashboard() {
   const { user, signOut } = useAuth();
   const { profile, loading } = useProfile();
+  const { enrollments, loading: enrollmentsLoading } = useEnrollments();
   const navigate = useNavigate();
   const [assessmentResult, setAssessmentResult] = useState<any>(null);
   const [loadingAssessment, setLoadingAssessment] = useState(true);
+  const [enrolledCourses, setEnrolledCourses] = useState<Course[]>([]);
 
   useEffect(() => {
     if (!user) {
@@ -19,7 +23,14 @@ export default function Dashboard() {
     }
 
     fetchAssessmentResult();
+    fetchEnrolledCourses();
   }, [user, navigate]);
+
+  useEffect(() => {
+    if (enrollments.length > 0) {
+      fetchEnrolledCourses();
+    }
+  }, [enrollments]);
 
   const fetchAssessmentResult = async () => {
     if (!user) return;
@@ -40,6 +51,50 @@ export default function Dashboard() {
       console.error('Error fetching assessment:', err);
     } finally {
       setLoadingAssessment(false);
+    }
+  };
+
+  const fetchEnrolledCourses = async () => {
+    if (!user || enrollments.length === 0) {
+      setEnrolledCourses([]);
+      return;
+    }
+
+    try {
+      const activeCourseIds = enrollments
+        .filter(e => e.status === 'active')
+        .map(e => e.course_id);
+
+      if (activeCourseIds.length === 0) {
+        setEnrolledCourses([]);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('courses')
+        .select('*')
+        .in('id', activeCourseIds);
+
+      if (error) throw error;
+
+      const coursesWithEnrollment = (data || []).map(course => {
+        const enrollment = enrollments.find(e => e.course_id === course.id);
+        return {
+          ...course,
+          curriculum: course.curriculum as Course['curriculum'],
+          enrollment,
+        };
+      });
+
+      coursesWithEnrollment.sort((a, b) => {
+        const dateA = new Date(a.enrollment?.last_accessed || 0).getTime();
+        const dateB = new Date(b.enrollment?.last_accessed || 0).getTime();
+        return dateB - dateA;
+      });
+
+      setEnrolledCourses(coursesWithEnrollment);
+    } catch (err) {
+      console.error('Error fetching enrolled courses:', err);
     }
   };
 
@@ -172,23 +227,64 @@ export default function Dashboard() {
             <div className="bg-white rounded-2xl shadow-xl p-8">
               <div className="flex items-center gap-3 mb-6">
                 <TrendingUp className="w-6 h-6 text-blue-600" />
-                <h2 className="text-2xl font-bold text-gray-900">Learning Progress</h2>
+                <h2 className="text-2xl font-bold text-gray-900">My Courses</h2>
               </div>
 
-              <div className="text-center py-12">
-                <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <BookOpen className="w-10 h-10 text-gray-400" />
+              {enrollmentsLoading ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
                 </div>
-                <p className="text-gray-600 mb-4">No courses enrolled yet</p>
-                {assessmentResult && (
-                  <Link
-                    to="/courses"
-                    className="inline-block text-blue-600 hover:text-blue-700 font-semibold"
-                  >
-                    Browse Recommended Courses
-                  </Link>
-                )}
-              </div>
+              ) : enrolledCourses.length > 0 ? (
+                <div className="space-y-4">
+                  {enrolledCourses.map((course) => {
+                    const lastAccessed = course.enrollment?.last_accessed
+                      ? new Date(course.enrollment.last_accessed).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                        })
+                      : 'Never';
+
+                    return (
+                      <Link
+                        key={course.id}
+                        to={`/courses/${course.id}`}
+                        className="block bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-200 hover:shadow-lg transition-all"
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <h3 className="font-bold text-gray-900 text-lg mb-1">{course.title}</h3>
+                            <p className="text-sm text-gray-600 line-clamp-2">{course.description}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="text-sm text-gray-600">
+                            Last accessed: {lastAccessed}
+                          </div>
+                          <div className="flex items-center gap-2 text-blue-600 font-semibold">
+                            <Play className="w-4 h-4" />
+                            <span>Continue</span>
+                          </div>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <BookOpen className="w-10 h-10 text-gray-400" />
+                  </div>
+                  <p className="text-gray-600 mb-4">No courses enrolled yet</p>
+                  {assessmentResult && (
+                    <Link
+                      to="/courses"
+                      className="inline-block text-blue-600 hover:text-blue-700 font-semibold"
+                    >
+                      Browse Recommended Courses
+                    </Link>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
