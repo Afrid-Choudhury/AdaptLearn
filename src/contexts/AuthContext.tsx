@@ -51,6 +51,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           });
 
         if (profileError) throw profileError;
+
+        await supabase
+          .from('user_roles')
+          .insert({
+            user_id: data.user.id,
+            role: 'student',
+          })
+          .select()
+          .maybeSingle();
       }
 
       return { error: null };
