@@ -42,6 +42,14 @@ Deno.serve(async (req: Request) => {
       );
     }
 
+    const verifiedEmail = "afridchoudhury@icloud.com";
+    const isTestingMode = resendApiKey.startsWith("re_");
+    const recipientEmail = isTestingMode ? verifiedEmail : to;
+
+    if (isTestingMode && to !== verifiedEmail) {
+      console.log(`Testing mode: Redirecting email from ${to} to ${verifiedEmail}`);
+    }
+
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -50,8 +58,10 @@ Deno.serve(async (req: Request) => {
       },
       body: JSON.stringify({
         from: "AdaptLearn <onboarding@resend.dev>",
-        to: [to],
-        subject: subject,
+        to: [recipientEmail],
+        subject: isTestingMode && to !== verifiedEmail
+          ? `[TEST for ${to}] ${subject}`
+          : subject,
         html: html,
         text: text || undefined,
       }),
