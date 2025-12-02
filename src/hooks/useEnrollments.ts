@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { CourseEnrollment } from '../lib/database.types';
 import { useAuth } from '../contexts/AuthContext';
+import { checkAndAwardAchievement } from '../lib/email-service';
 
 export function useEnrollments() {
   const { user } = useAuth();
@@ -63,6 +64,18 @@ export function useEnrollments() {
         .eq('id', courseId);
 
       setEnrollments(prev => [data, ...prev]);
+
+      const activeEnrollments = await supabase
+        .from('course_enrollments')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('status', 'active');
+
+      const enrollmentCount = activeEnrollments.data?.length || 0;
+      checkAndAwardAchievement(user.id, 'enrollment', { count: enrollmentCount }).catch(err => {
+        console.error('Failed to check enrollment achievements:', err);
+      });
+
       return data;
     } catch (err) {
       throw err;
