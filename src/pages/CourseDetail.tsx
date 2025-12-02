@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
   Bot, Clock, Users, Star, ChevronDown, ChevronUp,
-  PlayCircle, FileText, Code, ClipboardCheck, Target, CheckCircle, Lock
+  PlayCircle, FileText, Code, ClipboardCheck, Target, CheckCircle, Lock, BookOpen
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useCourseDetails } from '../hooks/useCourseDetails';
