@@ -22,7 +22,7 @@ export function useAssessment(assessmentId: string) {
 
       if (error) throw error;
 
-      const typedQuestions: AssessmentQuestion[] = data.map(q => ({
+      const typedQuestions: AssessmentQuestion[] = (data || []).map((q: any) => ({
         ...q,
         options: q.options as string[],
         difficulty: q.difficulty as 'beginner' | 'intermediate' | 'advanced',

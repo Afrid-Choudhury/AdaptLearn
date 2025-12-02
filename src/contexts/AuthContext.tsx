@@ -49,14 +49,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (data.user) {
         const { error: profileError } = await supabase
           .from('profiles')
-          .insert([
-            {
-              id: data.user.id,
-              email: data.user.email!,
-              username: username || email.split('@')[0],
-              skill_level: 'beginner',
-            },
-          ]);
+          .insert({
+            id: data.user.id,
+            email: data.user.email!,
+            username: username || email.split('@')[0],
+            skill_level: 'beginner',
+          });
 
         if (profileError && import.meta.env.DEV) {
           console.error('Profile creation error:', profileError);

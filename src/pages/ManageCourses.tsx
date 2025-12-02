@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Bot, Edit, Plus } from 'lucide-react';
+import { Bot, Edit, Plus, BookOpen } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useUserRole } from '../hooks/useUserRole';
 import { useCourses } from '../hooks/useCourses';
