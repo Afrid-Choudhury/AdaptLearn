@@ -11,6 +11,7 @@ import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import ManageCourses from './pages/ManageCourses';
 import CourseBuilder from './pages/CourseBuilder';
+import EmailTest from './pages/EmailTest';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/admin/courses" element={<ManageCourses />} />
           <Route path="/admin/courses/new" element={<CourseBuilder />} />
           <Route path="/admin/courses/:courseId/edit" element={<CourseBuilder />} />
+          <Route path="/email-test" element={<EmailTest />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>
