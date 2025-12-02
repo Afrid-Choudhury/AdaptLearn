@@ -33,16 +33,7 @@ export default function SignUp() {
       setError(signUpError.message);
       setLoading(false);
     } else if (data?.user) {
-      const userId = data.user.id;
-      const displayName = username || email.split('@')[0];
-
-      sendWelcomeEmail(userId, email, displayName).catch(err => {
-        console.error('Failed to send welcome email:', err);
-      });
-
-      checkAndAwardAchievement(userId, 'custom', { action: 'signup' }).catch(err => {
-        console.error('Failed to award signup achievement:', err);
-      });
+      setLoading(false);
 
       if (guestAnswers && guestScore) {
         sessionStorage.removeItem('guestAssessmentAnswers');
@@ -51,6 +42,8 @@ export default function SignUp() {
       } else {
         navigate('/dashboard');
       }
+    } else {
+      setLoading(false);
     }
   };
 
