@@ -101,7 +101,9 @@ export default function CourseBuilder() {
         alert('Course updated successfully!');
       }
     } catch (err) {
-      console.error('Error saving course:', err);
+      if (import.meta.env.DEV) {
+        console.error('Error saving course:', err);
+      }
       alert('Failed to save course. Please try again.');
     }
   };
@@ -132,7 +134,9 @@ export default function CourseBuilder() {
       setNewModule({ title: '', description: '', estimated_minutes: 60, learning_objectives: [''] });
       window.location.reload();
     } catch (err) {
-      console.error('Error adding module:', err);
+      if (import.meta.env.DEV) {
+        console.error('Error adding module:', err);
+      }
       alert('Failed to add module. Please try again.');
     }
   };
@@ -146,7 +150,9 @@ export default function CourseBuilder() {
       await deleteModule(moduleId);
       window.location.reload();
     } catch (err) {
-      console.error('Error deleting module:', err);
+      if (import.meta.env.DEV) {
+        console.error('Error deleting module:', err);
+      }
       alert('Failed to delete module. Please try again.');
     }
   };
@@ -174,7 +180,9 @@ export default function CourseBuilder() {
       setNewLesson({ title: '', description: '', estimated_minutes: 15, content_type: 'reading', content_url: '' });
       window.location.reload();
     } catch (err) {
-      console.error('Error adding lesson:', err);
+      if (import.meta.env.DEV) {
+        console.error('Error adding lesson:', err);
+      }
       alert('Failed to add lesson. Please try again.');
     }
   };
@@ -188,7 +196,9 @@ export default function CourseBuilder() {
       await deleteLesson(lessonId);
       window.location.reload();
     } catch (err) {
-      console.error('Error deleting lesson:', err);
+      if (import.meta.env.DEV) {
+        console.error('Error deleting lesson:', err);
+      }
       alert('Failed to delete lesson. Please try again.');
     }
   };

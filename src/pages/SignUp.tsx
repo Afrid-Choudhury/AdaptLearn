@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { BookOpen } from 'lucide-react';
-import { sendWelcomeEmail, checkAndAwardAchievement } from '../lib/email-service';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');

@@ -21,11 +21,15 @@ export function useWelcomeEmail() {
       if (user.email) {
         setTimeout(() => {
           sendWelcomeEmail(user.id, user.email!, displayName).catch(err => {
-            console.error('Failed to send welcome email:', err);
+            if (import.meta.env.DEV) {
+              console.error('Failed to send welcome email:', err);
+            }
           });
 
           checkAndAwardAchievement(user.id, 'custom', { action: 'signup' }).catch(err => {
-            console.error('Failed to award signup achievement:', err);
+            if (import.meta.env.DEV) {
+              console.error('Failed to award signup achievement:', err);
+            }
           });
         }, 2000);
       }

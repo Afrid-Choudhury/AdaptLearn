@@ -22,7 +22,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       (async () => {
         setUser(session?.user ?? null);
       })();
@@ -49,14 +49,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (data.user) {
         const { error: profileError } = await supabase
           .from('profiles')
-          .insert({
-            id: data.user.id,
-            email: data.user.email!,
-            username: username || email.split('@')[0],
-            skill_level: 'beginner',
-          });
+          .insert([
+            {
+              id: data.user.id,
+              email: data.user.email!,
+              username: username || email.split('@')[0],
+              skill_level: 'beginner',
+            },
+          ]);
 
-        if (profileError) {
+        if (profileError && import.meta.env.DEV) {
           console.error('Profile creation error:', profileError);
         }
       }

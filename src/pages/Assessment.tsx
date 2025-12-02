@@ -76,12 +76,16 @@ export default function Assessment() {
           .eq('id', user.id);
 
         checkAndAwardAchievement(user.id, 'assessment_score', { score }).catch(err => {
-          console.error('Failed to check assessment achievements:', err);
+          if (import.meta.env.DEV) {
+            console.error('Failed to check assessment achievements:', err);
+          }
         });
 
         navigate('/courses', { state: { score, answers, timeTaken } });
       } catch (error) {
-        console.error('Error saving results:', error);
+        if (import.meta.env.DEV) {
+          console.error('Error saving results:', error);
+        }
       }
     } else {
       sessionStorage.setItem('guestAssessmentScore', score.toString());
