@@ -21,16 +21,18 @@ Use this checklist to ensure a smooth deployment to production.
 - [x] `.gitignore` includes `.env`
 
 ### Database
-- [ ] All 7 migrations applied to production Supabase instance
+- [ ] All 8 migrations applied to production Supabase instance (including security fixes)
 - [ ] RLS policies active on all tables
 - [ ] Database backups configured in Supabase
 - [ ] Test data added (optional)
+- [x] Security and performance issues fixed (migration applied)
 
 ### Authentication
 - [ ] Supabase Auth configured correctly
 - [ ] Email confirmation settings configured (enabled/disabled)
 - [ ] Password requirements set appropriately
 - [ ] Email templates customized (optional)
+- [ ] **IMPORTANT:** Enable "Password Protection" (leaked password detection) in Supabase Dashboard → Authentication → Settings
 
 ### Edge Functions
 - [ ] `send-email` edge function deployed to Supabase
