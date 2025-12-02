@@ -178,9 +178,9 @@ export default function Assessment() {
                   } ${showFeedback ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-mono text-sm md:text-base">{option}</span>
-                    {showCorrect && <CheckCircle className="w-6 h-6 text-green-600" />}
-                    {showIncorrect && <XCircle className="w-6 h-6 text-red-600" />}
+                    <span className="font-mono text-sm md:text-base text-white">{option}</span>
+                    {showCorrect && <CheckCircle className="w-6 h-6 text-green-400" />}
+                    {showIncorrect && <XCircle className="w-6 h-6 text-red-400" />}
                   </div>
                 </button>
               );
