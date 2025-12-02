@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { BookOpen } from 'lucide-react';
+import { sendWelcomeEmail, checkAndAwardAchievement } from '../lib/email-service';
 
 export default function SignUp() {
   const [email, setEmail] = useState('');
@@ -26,12 +27,23 @@ export default function SignUp() {
     const guestAnswers = sessionStorage.getItem('guestAssessmentAnswers');
     const guestScore = sessionStorage.getItem('guestAssessmentScore');
 
-    const { error: signUpError } = await signUp(email, password, username);
+    const { error: signUpError, data } = await signUp(email, password, username);
 
     if (signUpError) {
       setError(signUpError.message);
       setLoading(false);
-    } else {
+    } else if (data?.user) {
+      const userId = data.user.id;
+      const displayName = username || email.split('@')[0];
+
+      sendWelcomeEmail(userId, email, displayName).catch(err => {
+        console.error('Failed to send welcome email:', err);
+      });
+
+      checkAndAwardAchievement(userId, 'custom', { action: 'signup' }).catch(err => {
+        console.error('Failed to award signup achievement:', err);
+      });
+
       if (guestAnswers && guestScore) {
         sessionStorage.removeItem('guestAssessmentAnswers');
         sessionStorage.removeItem('guestAssessmentScore');

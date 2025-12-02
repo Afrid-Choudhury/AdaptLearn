@@ -5,6 +5,7 @@ import { useAssessment } from '../hooks/useAssessment';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { UserAnswer } from '../lib/database.types';
+import { checkAndAwardAchievement } from '../lib/email-service';
 
 const ASSESSMENT_ID = '00000000-0000-0000-0000-000000000001';
 
@@ -73,6 +74,10 @@ export default function Assessment() {
           .from('profiles')
           .update({ skill_level: skillLevel })
           .eq('id', user.id);
+
+        checkAndAwardAchievement(user.id, 'assessment_score', { score }).catch(err => {
+          console.error('Failed to check assessment achievements:', err);
+        });
 
         navigate('/courses', { state: { score, answers, timeTaken } });
       } catch (error) {
