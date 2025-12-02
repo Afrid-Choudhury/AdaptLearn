@@ -52,7 +52,9 @@ export default function Dashboard() {
         setAssessmentResult(data);
       }
     } catch (err) {
-      console.error('Error fetching assessment:', err);
+      if (import.meta.env.DEV) {
+        console.error('Error fetching assessment:', err);
+      }
     } finally {
       setLoadingAssessment(false);
     }
@@ -98,7 +100,9 @@ export default function Dashboard() {
 
       setEnrolledCourses(coursesWithEnrollment);
     } catch (err) {
-      console.error('Error fetching enrolled courses:', err);
+      if (import.meta.env.DEV) {
+        console.error('Error fetching enrolled courses:', err);
+      }
     }
   };
 

@@ -189,7 +189,9 @@ export function useModuleProgress(enrollmentId?: string) {
         return [...prev, data];
       });
     } catch (err) {
-      console.error('Error updating lesson progress:', err);
+      if (import.meta.env.DEV) {
+        console.error('Error updating lesson progress:', err);
+      }
     }
   };
 

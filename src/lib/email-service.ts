@@ -74,7 +74,9 @@ async function sendEmail(params: SendEmailParams): Promise<{ success: boolean; e
 
     return { success: true };
   } catch (error) {
-    console.error('Error sending email:', error);
+    if (import.meta.env.DEV) {
+      console.error('Error sending email:', error);
+    }
 
     await supabase.from('email_log').insert({
       user_id: params.userId,
@@ -219,7 +221,9 @@ export async function checkEmailPreference(
     const prefKey = `email_${emailType}` as keyof typeof data;
     return data[prefKey] !== false;
   } catch (error) {
-    console.error('Error checking email preference:', error);
+    if (import.meta.env.DEV) {
+      console.error('Error checking email preference:', error);
+    }
     return true;
   }
 }
@@ -261,7 +265,9 @@ export async function unlockAchievement(
 
     return { success: true, achievement };
   } catch (error) {
-    console.error('Error unlocking achievement:', error);
+    if (import.meta.env.DEV) {
+      console.error('Error unlocking achievement:', error);
+    }
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to unlock achievement',
@@ -283,7 +289,9 @@ export async function getUserAchievements(userId: string) {
     if (error) throw error;
     return data || [];
   } catch (error) {
-    console.error('Error fetching user achievements:', error);
+    if (import.meta.env.DEV) {
+      console.error('Error fetching user achievements:', error);
+    }
     return [];
   }
 }
@@ -298,7 +306,9 @@ export async function getAllAchievements() {
     if (error) throw error;
     return data || [];
   } catch (error) {
-    console.error('Error fetching achievements:', error);
+    if (import.meta.env.DEV) {
+      console.error('Error fetching achievements:', error);
+    }
     return [];
   }
 }
@@ -352,7 +362,9 @@ export async function checkAndAwardAchievement(
 
     return awardedAchievements;
   } catch (error) {
-    console.error('Error checking and awarding achievements:', error);
+    if (import.meta.env.DEV) {
+      console.error('Error checking and awarding achievements:', error);
+    }
     return [];
   }
 }

@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
-  BookOpen, Clock, Users, Star, Award, ChevronDown, ChevronUp,
+  BookOpen, Clock, Users, Star, ChevronDown, ChevronUp,
   PlayCircle, FileText, Code, ClipboardCheck, Target, CheckCircle, Lock
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useCourseDetails } from '../hooks/useCourseDetails';
 import { useEnrollments } from '../hooks/useEnrollments';
 import { useModuleProgress } from '../hooks/useModuleProgress';
-import { CourseModule, CourseLesson } from '../lib/database.types';
 
 export default function CourseDetail() {
   const { courseId } = useParams<{ courseId: string }>();
@@ -51,7 +50,9 @@ export default function CourseDetail() {
       await enrollCourse(courseId);
       window.location.reload();
     } catch (err) {
-      console.error('Error enrolling:', err);
+      if (import.meta.env.DEV) {
+        console.error('Error enrolling:', err);
+      }
       alert('Failed to enroll in course. Please try again.');
     } finally {
       setEnrolling(false);

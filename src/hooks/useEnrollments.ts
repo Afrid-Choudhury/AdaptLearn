@@ -73,11 +73,16 @@ export function useEnrollments() {
 
       const enrollmentCount = activeEnrollments.data?.length || 0;
       checkAndAwardAchievement(user.id, 'enrollment', { count: enrollmentCount }).catch(err => {
-        console.error('Failed to check enrollment achievements:', err);
+        if (import.meta.env.DEV) {
+          console.error('Failed to check enrollment achievements:', err);
+        }
       });
 
       return data;
     } catch (err) {
+      if (import.meta.env.DEV) {
+        console.error('Enrollment error:', err);
+      }
       throw err;
     }
   };
@@ -103,6 +108,9 @@ export function useEnrollments() {
         prev.map(e => e.id === enrollmentId ? { ...e, status: 'dropped' as const } : e)
       );
     } catch (err) {
+      if (import.meta.env.DEV) {
+        console.error('Unenrollment error:', err);
+      }
       throw err;
     }
   };
@@ -117,7 +125,9 @@ export function useEnrollments() {
         .eq('id', enrollmentId)
         .eq('user_id', user.id);
     } catch (err) {
-      console.error('Error updating last accessed:', err);
+      if (import.meta.env.DEV) {
+        console.error('Error updating last accessed:', err);
+      }
     }
   };
 
