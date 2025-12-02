@@ -5,7 +5,7 @@ import { supabase } from '../lib/supabase';
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  signUp: (email: string, password: string, username?: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string, username?: string) => Promise<{ error: Error | null; data?: { user: User | null } }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
@@ -36,6 +36,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            username: username || email.split('@')[0],
+          },
+          emailRedirectTo: window.location.origin,
+        },
       });
 
       if (error) throw error;
@@ -50,21 +56,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             skill_level: 'beginner',
           });
 
-        if (profileError) throw profileError;
-
-        await supabase
-          .from('user_roles')
-          .insert({
-            user_id: data.user.id,
-            role: 'student',
-          })
-          .select()
-          .maybeSingle();
+        if (profileError) {
+          console.error('Profile creation error:', profileError);
+        }
       }
 
-      return { error: null };
+      return { error: null, data: { user: data.user } };
     } catch (error) {
-      return { error: error as Error };
+      return { error: error as Error, data: undefined };
     }
   };
 

@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useProfile } from '../hooks/useProfile';
 import { useEnrollments } from '../hooks/useEnrollments';
 import { useUserRole } from '../hooks/useUserRole';
+import { useWelcomeEmail } from '../hooks/useWelcomeEmail';
 import { supabase } from '../lib/supabase';
 import { Course } from '../lib/database.types';
 
@@ -13,6 +14,7 @@ export default function Dashboard() {
   const { profile, loading } = useProfile();
   const { enrollments, loading: enrollmentsLoading } = useEnrollments();
   const { isAdminOrInstructor } = useUserRole();
+  useWelcomeEmail();
   const navigate = useNavigate();
   const [assessmentResult, setAssessmentResult] = useState<any>(null);
   const [loadingAssessment, setLoadingAssessment] = useState(true);
