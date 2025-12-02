@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { BookOpen, ChevronRight, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Bot, ChevronRight, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { useAssessment } from '../hooks/useAssessment';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
@@ -96,10 +96,10 @@ export default function Assessment() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading assessment...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+          <p className="text-gray-400">Loading assessment...</p>
         </div>
       </div>
     );
@@ -110,17 +110,21 @@ export default function Assessment() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
-      <nav className="bg-white border-b border-gray-200">
+    <div className="min-h-screen bg-background text-white">
+      <nav className="bg-surface/80 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-2 text-xl font-bold text-blue-600">
-              <BookOpen className="w-7 h-7" />
-              AdaptLearn
-            </div>
+            <Link to="/" className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                <Bot className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-100 to-white">
+                AdaptLearn
+              </span>
+            </Link>
             <div className="flex items-center gap-4">
-              <Clock className="w-5 h-5 text-gray-500" />
-              <span className="text-sm text-gray-600">
+              <Clock className="w-5 h-5 text-gray-400" />
+              <span className="text-sm text-gray-300">
                 Question {currentQuestionIndex + 1} of {questions.length}
               </span>
             </div>
@@ -131,23 +135,23 @@ export default function Assessment() {
       <div className="max-w-4xl mx-auto px-4 py-12">
         <div className="mb-8">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-semibold text-blue-600 uppercase tracking-wide">
+            <span className="text-sm font-semibold text-indigo-400 uppercase tracking-wide">
               {currentQuestion.difficulty} Level
             </span>
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-gray-400">
               {Math.round(((currentQuestionIndex + 1) / questions.length) * 100)}% Complete
             </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-surfaceHighlight rounded-full h-2">
             <div
-              className="bg-blue-600 h-2 rounded-full transition-all duration-500"
+              className="bg-indigo-600 h-2 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]"
               style={{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }}
             />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8">
+        <div className="bg-surface rounded-2xl shadow-xl border border-gray-800 p-8 md:p-12">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">
             {currentQuestion.question_text}
           </h2>
 
@@ -165,12 +169,12 @@ export default function Assessment() {
                   disabled={showFeedback}
                   className={`w-full text-left p-4 rounded-xl border-2 transition-all ${
                     showCorrect
-                      ? 'border-green-500 bg-green-50'
+                      ? 'border-green-600 bg-green-900/20'
                       : showIncorrect
-                      ? 'border-red-500 bg-red-50'
+                      ? 'border-red-600 bg-red-900/20'
                       : isSelected
-                      ? 'border-blue-600 bg-blue-50'
-                      : 'border-gray-200 hover:border-blue-400 hover:bg-blue-50'
+                      ? 'border-indigo-600 bg-indigo-900/20'
+                      : 'border-gray-700 hover:border-indigo-500 hover:bg-surfaceHighlight'
                   } ${showFeedback ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                 >
                   <div className="flex items-center justify-between">
@@ -186,10 +190,10 @@ export default function Assessment() {
           {showFeedback && (
             <div
               className={`mt-6 p-4 rounded-lg ${
-                isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'
+                isCorrect ? 'bg-green-900/20 border border-green-700' : 'bg-red-900/20 border border-red-700'
               }`}
             >
-              <p className={`font-semibold ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
+              <p className={`font-semibold ${isCorrect ? 'text-green-400' : 'text-red-400'}`}>
                 {isCorrect ? 'Correct!' : 'Incorrect'}
               </p>
             </div>
@@ -199,7 +203,7 @@ export default function Assessment() {
             <button
               onClick={handleNext}
               disabled={!selectedAnswer}
-              className="mt-8 w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
+              className="mt-8 w-full md:w-auto bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold py-3 px-8 rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(99,102,241,0.3)]"
             >
               {currentQuestionIndex === questions.length - 1 ? 'Finish' : 'Next Question'}
               <ChevronRight className="w-5 h-5" />
