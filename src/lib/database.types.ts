@@ -254,6 +254,7 @@ export interface Database {
           estimated_minutes: number;
           content_type: 'video' | 'reading' | 'exercise' | 'quiz';
           content_url: string | null;
+          content_text: string | null;
           created_at: string;
         };
         Insert: {
@@ -265,6 +266,7 @@ export interface Database {
           estimated_minutes?: number;
           content_type?: 'video' | 'reading' | 'exercise' | 'quiz';
           content_url?: string | null;
+          content_text?: string | null;
           created_at?: string;
         };
         Update: {
@@ -276,6 +278,7 @@ export interface Database {
           estimated_minutes?: number;
           content_type?: 'video' | 'reading' | 'exercise' | 'quiz';
           content_url?: string | null;
+          content_text?: string | null;
           created_at?: string;
         };
       };
@@ -437,6 +440,7 @@ export interface CourseLesson {
   estimated_minutes: number;
   content_type: 'video' | 'reading' | 'exercise' | 'quiz';
   content_url: string | null;
+  content_text: string | null;
   created_at: string;
 }
 

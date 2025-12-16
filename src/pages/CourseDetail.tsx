@@ -8,6 +8,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useCourseDetails } from '../hooks/useCourseDetails';
 import { useEnrollments } from '../hooks/useEnrollments';
 import { useModuleProgress } from '../hooks/useModuleProgress';
+import { useContinueLearning } from '../hooks/useContinueLearning';
 
 export default function CourseDetail() {
   const { courseId } = useParams<{ courseId: string }>();
@@ -17,6 +18,7 @@ export default function CourseDetail() {
   const { enrollCourse, isEnrolled, getEnrollment } = useEnrollments();
   const enrollment = getEnrollment(courseId || '');
   const { moduleProgress } = useModuleProgress(enrollment?.id);
+  const { nextLesson } = useContinueLearning(courseDetails, enrollment?.id);
   const [enrolling, setEnrolling] = useState(false);
   const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
 
@@ -331,13 +333,13 @@ export default function CourseDetail() {
                     </div>
                   </div>
                   <Link
-                    to="/dashboard"
+                    to={nextLesson ? `/courses/${courseId}/lessons/${nextLesson.id}` : '/dashboard'}
                     className="block w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-lg text-center transition-all transform hover:scale-105 mb-3"
                   >
                     Continue Learning
                   </Link>
                   <p className="text-center text-sm text-gray-600">
-                    Access your course from the dashboard
+                    {nextLesson ? 'Continue where you left off' : 'Access your course from the dashboard'}
                   </p>
                 </div>
               ) : (
