@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Bot, Clock, Users, Star, Award, TrendingUp, CheckCircle } from 'lucide-react';
+import { BookOpen, Clock, Users, Star, Award, TrendingUp, CheckCircle } from 'lucide-react';
 import { useCourses } from '../hooks/useCourses';
 import { useAuth } from '../contexts/AuthContext';
 import { useProfile } from '../hooks/useProfile';
@@ -32,43 +32,39 @@ export default function Courses() {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'beginner':
-        return 'bg-blue-900/30 text-blue-400 border border-blue-800/50';
+        return 'bg-blue-100 text-blue-700';
       case 'intermediate':
-        return 'bg-green-900/30 text-green-400 border border-green-800/50';
+        return 'bg-green-100 text-green-700';
       case 'advanced':
-        return 'bg-orange-900/30 text-orange-400 border border-orange-800/50';
+        return 'bg-orange-100 text-orange-700';
       default:
-        return 'bg-gray-800 text-gray-400 border border-gray-700';
+        return 'bg-gray-100 text-gray-700';
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading courses...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading courses...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background text-white">
-      <nav className="bg-surface/80 backdrop-blur-md border-b border-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
+      <nav className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                <Bot className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-100 to-white">
-                AdaptLearn
-              </span>
+            <Link to="/" className="flex items-center gap-2 text-xl font-bold text-blue-600">
+              <BookOpen className="w-7 h-7" />
+              AdaptLearn
             </Link>
             <Link
               to="/dashboard"
-              className="text-gray-300 hover:text-white font-semibold transition-colors"
+              className="text-gray-700 hover:text-blue-600 font-semibold transition-colors"
             >
               Dashboard
             </Link>
@@ -78,7 +74,7 @@ export default function Courses() {
 
       <div className="max-w-7xl mx-auto px-4 py-12">
         {score !== undefined && (
-          <div className="mb-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-xl border border-indigo-500/50 p-8 text-white">
+          <div className="mb-12 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl shadow-xl p-8 text-white">
             <div className="flex items-center gap-3 mb-4">
               <Award className="w-8 h-8" />
               <h1 className="text-3xl font-bold">Assessment Complete!</h1>
@@ -95,35 +91,35 @@ export default function Courses() {
         {recommendedCourse && (
           <div className="mb-12">
             <div className="flex items-center gap-2 mb-6">
-              <TrendingUp className="w-6 h-6 text-indigo-400" />
-              <h2 className="text-3xl font-bold text-white">Recommended for You</h2>
+              <TrendingUp className="w-6 h-6 text-blue-600" />
+              <h2 className="text-3xl font-bold text-gray-900">Recommended for You</h2>
             </div>
 
-            <div className="bg-surface rounded-2xl shadow-xl border-2 border-indigo-600 shadow-indigo-900/20 p-8">
+            <div className="bg-white rounded-2xl shadow-xl p-8 border-4 border-blue-600">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <span className={`inline-block px-3 py-1 rounded-lg text-sm font-semibold ${getDifficultyColor(recommendedCourse.difficulty)} mb-3`}>
+                  <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${getDifficultyColor(recommendedCourse.difficulty)} mb-3`}>
                     {recommendedCourse.difficulty.charAt(0).toUpperCase() + recommendedCourse.difficulty.slice(1)}
                   </span>
-                  <h3 className="text-2xl font-bold text-white mb-2">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
                     {recommendedCourse.title}
                   </h3>
-                  <p className="text-gray-300 leading-relaxed">
+                  <p className="text-gray-600 leading-relaxed">
                     {recommendedCourse.description}
                   </p>
                 </div>
               </div>
 
               <div className="flex flex-wrap gap-6 mb-6">
-                <div className="flex items-center gap-2 text-gray-400">
+                <div className="flex items-center gap-2 text-gray-600">
                   <Clock className="w-5 h-5" />
                   <span>{recommendedCourse.duration_hours} hours</span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-400">
-                  <Star className="w-5 h-5 text-yellow-400" />
+                <div className="flex items-center gap-2 text-gray-600">
+                  <Star className="w-5 h-5 text-yellow-500" />
                   <span>{recommendedCourse.rating.toFixed(1)} rating</span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-400">
+                <div className="flex items-center gap-2 text-gray-600">
                   <Users className="w-5 h-5" />
                   <span>{recommendedCourse.student_count.toLocaleString()} students</span>
                 </div>
@@ -131,12 +127,12 @@ export default function Courses() {
 
               {recommendedCourse.curriculum && (
                 <div className="mb-6">
-                  <h4 className="font-bold text-white mb-3">What You'll Learn:</h4>
+                  <h4 className="font-bold text-gray-900 mb-3">What You'll Learn:</h4>
                   <div className="space-y-2">
                     {recommendedCourse.curriculum.modules.slice(0, 3).map((module, idx) => (
                       <div key={idx} className="flex items-start gap-2">
-                        <div className="w-2 h-2 bg-indigo-400 rounded-full mt-2 flex-shrink-0"></div>
-                        <span className="text-gray-300">{module.title}</span>
+                        <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
+                        <span className="text-gray-700">{module.title}</span>
                       </div>
                     ))}
                   </div>
@@ -145,13 +141,13 @@ export default function Courses() {
 
               {isEnrolled(recommendedCourse.id) ? (
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2 text-green-400 font-semibold">
+                  <div className="flex items-center gap-2 text-green-600 font-semibold">
                     <CheckCircle className="w-5 h-5" />
                     <span>Enrolled</span>
                   </div>
                   <Link
                     to={`/courses/${recommendedCourse.id}`}
-                    className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold px-8 py-3 rounded-lg transition-all transform hover:scale-105 shadow-[0_0_15px_rgba(99,102,241,0.3)]"
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition-all transform hover:scale-105"
                   >
                     Continue Learning
                   </Link>
@@ -159,7 +155,7 @@ export default function Courses() {
               ) : (
                 <Link
                   to={`/courses/${recommendedCourse.id}`}
-                  className="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold px-8 py-3 rounded-lg transition-all transform hover:scale-105 shadow-[0_0_15px_rgba(99,102,241,0.3)]"
+                  className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition-all transform hover:scale-105"
                 >
                   View Course
                 </Link>
@@ -170,23 +166,23 @@ export default function Courses() {
 
         {otherCourses.length > 0 && (
           <div>
-            <h2 className="text-3xl font-bold text-white mb-6">Explore Other Courses</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">Explore Other Courses</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {otherCourses.map((course) => (
-                <div key={course.id} className="bg-surface rounded-xl shadow-lg border border-gray-800 p-6 hover:shadow-xl hover:shadow-indigo-900/10 hover:-translate-y-1 transition-all">
-                  <span className={`inline-block px-3 py-1 rounded-lg text-sm font-semibold ${getDifficultyColor(course.difficulty)} mb-3`}>
+                <div key={course.id} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                  <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${getDifficultyColor(course.difficulty)} mb-3`}>
                     {course.difficulty.charAt(0).toUpperCase() + course.difficulty.slice(1)}
                   </span>
-                  <h3 className="text-xl font-bold text-white mb-2">{course.title}</h3>
-                  <p className="text-gray-400 mb-4 line-clamp-2">{course.description}</p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{course.title}</h3>
+                  <p className="text-gray-600 mb-4 line-clamp-2">{course.description}</p>
 
-                  <div className="flex flex-wrap gap-4 mb-4 text-sm text-gray-400">
+                  <div className="flex flex-wrap gap-4 mb-4 text-sm text-gray-600">
                     <div className="flex items-center gap-1">
                       <Clock className="w-4 h-4" />
                       <span>{course.duration_hours}h</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 text-yellow-400" />
+                      <Star className="w-4 h-4 text-yellow-500" />
                       <span>{course.rating.toFixed(1)}</span>
                     </div>
                     <div className="flex items-center gap-1">
@@ -197,14 +193,14 @@ export default function Courses() {
 
                   <div className="flex items-center justify-between">
                     {isEnrolled(course.id) && (
-                      <div className="flex items-center gap-2 text-green-400 font-semibold text-sm">
+                      <div className="flex items-center gap-2 text-green-600 font-semibold text-sm">
                         <CheckCircle className="w-4 h-4" />
                         <span>Enrolled</span>
                       </div>
                     )}
                     <Link
                       to={`/courses/${course.id}`}
-                      className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors"
+                      className="text-blue-600 hover:text-blue-700 font-semibold transition-colors"
                     >
                       View Details
                     </Link>

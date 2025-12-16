@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
-  Bot, Clock, Users, Star, ChevronDown, ChevronUp,
-  PlayCircle, FileText, Code, ClipboardCheck, Target, CheckCircle, Lock, BookOpen
+  BookOpen, Clock, Users, Star, ChevronDown, ChevronUp,
+  PlayCircle, FileText, Code, ClipboardCheck, Target, CheckCircle, Lock
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useCourseDetails } from '../hooks/useCourseDetails';
@@ -62,13 +62,13 @@ export default function CourseDetail() {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'beginner':
-        return 'bg-blue-900/30 text-blue-400 border border-blue-800/50';
+        return 'bg-blue-100 text-blue-700';
       case 'intermediate':
-        return 'bg-green-900/30 text-green-400 border border-green-800/50';
+        return 'bg-green-100 text-green-700';
       case 'advanced':
-        return 'bg-orange-900/30 text-orange-400 border border-orange-800/50';
+        return 'bg-orange-100 text-orange-700';
       default:
-        return 'bg-gray-800 text-gray-400 border border-gray-700';
+        return 'bg-gray-100 text-gray-700';
     }
   };
 
@@ -104,10 +104,10 @@ export default function CourseDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading course details...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading course details...</p>
         </div>
       </div>
     );
@@ -115,10 +115,10 @@ export default function CourseDetail() {
 
   if (!courseDetails) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-400 mb-4">Course not found</p>
-          <Link to="/courses" className="text-indigo-400 hover:text-indigo-300 font-semibold">
+          <p className="text-gray-600 mb-4">Course not found</p>
+          <Link to="/courses" className="text-blue-600 hover:text-blue-700 font-semibold">
             Back to Courses
           </Link>
         </div>
@@ -133,28 +133,24 @@ export default function CourseDetail() {
   const remainingMinutes = totalMinutes % 60;
 
   return (
-    <div className="min-h-screen bg-background text-white">
-      <nav className="bg-surface/80 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
+      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                <Bot className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-100 to-white">
-                AdaptLearn
-              </span>
+            <Link to="/" className="flex items-center gap-2 text-xl font-bold text-blue-600">
+              <BookOpen className="w-7 h-7" />
+              AdaptLearn
             </Link>
             <div className="flex gap-6">
               <Link
                 to="/courses"
-                className="text-gray-300 hover:text-white font-semibold transition-colors"
+                className="text-gray-700 hover:text-blue-600 font-semibold transition-colors"
               >
                 Courses
               </Link>
               <Link
                 to="/dashboard"
-                className="text-gray-300 hover:text-white font-semibold transition-colors"
+                className="text-gray-700 hover:text-blue-600 font-semibold transition-colors"
               >
                 Dashboard
               </Link>
@@ -165,7 +161,7 @@ export default function CourseDetail() {
 
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="mb-8">
-          <Link to="/courses" className="text-indigo-400 hover:text-indigo-300 font-semibold mb-4 inline-block">
+          <Link to="/courses" className="text-blue-600 hover:text-blue-700 font-semibold mb-4 inline-block">
             &larr; Back to Courses
           </Link>
         </div>

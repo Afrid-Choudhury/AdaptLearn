@@ -96,8 +96,7 @@ The database schema is managed through Supabase migrations. All migrations are l
 5. `20251117030527_fix_trigger_rls_bypass.sql` - Trigger fixes
 6. `20251202011927_create_email_system.sql` - Email system
 7. `20251202012657_fix_user_signup_triggers.sql` - Signup flow fixes
-8. `20251202023341_fix_security_performance_issues.sql` - Security & performance optimizations
-9. `20251202031425_add_sample_assessment_questions.sql` - Sample assessment questions
+8. `20251202030000_fix_security_performance_issues.sql` - Security & performance optimizations
 
 These migrations should be automatically applied if you're using Supabase CLI or can be run manually through the Supabase Dashboard.
 

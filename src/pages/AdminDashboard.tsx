@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Bot, Plus, Users, GraduationCap, Settings, BookOpen } from 'lucide-react';
+import { BookOpen, Plus, Users, GraduationCap, Settings } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useUserRole } from '../hooks/useUserRole';
 import { useCourses } from '../hooks/useCourses';
@@ -24,10 +24,10 @@ export default function AdminDashboard() {
 
   if (!user || roleLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
         </div>
       </div>
     );
@@ -40,28 +40,24 @@ export default function AdminDashboard() {
   const totalStudents = courses.reduce((sum, course) => sum + course.student_count, 0);
 
   return (
-    <div className="min-h-screen bg-background text-white">
-      <nav className="bg-surface/80 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
+      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                <Bot className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-100 to-white">
-                AdaptLearn Admin
-              </span>
+            <Link to="/" className="flex items-center gap-2 text-xl font-bold text-blue-600">
+              <BookOpen className="w-7 h-7" />
+              AdaptLearn Admin
             </Link>
             <div className="flex gap-6">
               <Link
                 to="/dashboard"
-                className="text-gray-300 hover:text-white font-semibold transition-colors"
+                className="text-gray-700 hover:text-blue-600 font-semibold transition-colors"
               >
                 My Dashboard
               </Link>
               <Link
                 to="/courses"
-                className="text-gray-300 hover:text-white font-semibold transition-colors"
+                className="text-gray-700 hover:text-blue-600 font-semibold transition-colors"
               >
                 Courses
               </Link>
@@ -72,70 +68,70 @@ export default function AdminDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Admin Dashboard</h1>
-          <p className="text-gray-400">Manage courses, modules, and lessons</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
+          <p className="text-gray-600">Manage courses, modules, and lessons</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="bg-surface rounded-xl shadow-lg border border-gray-800 p-6">
+          <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                 <GraduationCap className="w-6 h-6 text-blue-600" />
               </div>
               <div>
-                <div className="text-3xl font-bold text-white">{courses.length}</div>
-                <div className="text-gray-400 text-sm">Total Courses</div>
+                <div className="text-3xl font-bold text-gray-900">{courses.length}</div>
+                <div className="text-gray-600 text-sm">Total Courses</div>
               </div>
             </div>
           </div>
 
-          <div className="bg-surface rounded-xl shadow-lg border border-gray-800 p-6">
+          <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                 <Users className="w-6 h-6 text-green-600" />
               </div>
               <div>
-                <div className="text-3xl font-bold text-white">{totalStudents.toLocaleString()}</div>
-                <div className="text-gray-400 text-sm">Total Students</div>
+                <div className="text-3xl font-bold text-gray-900">{totalStudents.toLocaleString()}</div>
+                <div className="text-gray-600 text-sm">Total Students</div>
               </div>
             </div>
           </div>
 
-          <div className="bg-surface rounded-xl shadow-lg border border-gray-800 p-6">
+          <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-orange-500/10 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
                 <Settings className="w-6 h-6 text-orange-600" />
               </div>
               <div>
-                <div className="text-3xl font-bold text-white">Active</div>
-                <div className="text-gray-400 text-sm">Platform Status</div>
+                <div className="text-3xl font-bold text-gray-900">Active</div>
+                <div className="text-gray-600 text-sm">Platform Status</div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-surface rounded-2xl shadow-xl border border-gray-800 p-8 mb-8">
+        <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white">Quick Actions</h2>
+            <h2 className="text-2xl font-bold text-gray-900">Quick Actions</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Link
               to="/admin/courses/new"
-              className="flex items-center gap-4 p-6 bg-blue-900/20 border-2 border-blue-800/50 rounded-xl hover:shadow-lg hover:shadow-blue-900/20 transition-all"
+              className="flex items-center gap-4 p-6 bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-xl hover:shadow-lg transition-all"
             >
               <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
                 <Plus className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h3 className="font-bold text-white text-lg">Create New Course</h3>
-                <p className="text-gray-400 text-sm">Add a new course with modules and lessons</p>
+                <h3 className="font-bold text-gray-900 text-lg">Create New Course</h3>
+                <p className="text-gray-600 text-sm">Add a new course with modules and lessons</p>
               </div>
             </Link>
 
             <Link
               to="/admin/courses"
-              className="flex items-center gap-4 p-6 bg-green-900/20 border-2 border-green-800/50 rounded-xl hover:shadow-lg hover:shadow-green-900/20 transition-all"
+              className="flex items-center gap-4 p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl hover:shadow-lg transition-all"
             >
               <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
                 <BookOpen className="w-6 h-6 text-white" />

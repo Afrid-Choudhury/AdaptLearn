@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { CourseWithDetails, CourseLesson, ModuleWithLessons } from '../lib/database.types';
+import { CourseWithDetails, CourseModule, CourseLesson, ModuleWithLessons } from '../lib/database.types';
 import { useAuth } from '../contexts/AuthContext';
 
 export function useCourseDetails(courseId: string | undefined) {
@@ -41,7 +41,7 @@ export function useCourseDetails(courseId: string | undefined) {
 
       if (modulesError) throw modulesError;
 
-      const moduleIds = (modules || []).map((m: any) => m.id);
+      const moduleIds = modules?.map(m => m.id) || [];
       let lessons: CourseLesson[] = [];
 
       if (moduleIds.length > 0) {
@@ -55,12 +55,12 @@ export function useCourseDetails(courseId: string | undefined) {
         lessons = lessonsData || [];
       }
 
-      const modulesWithLessons: ModuleWithLessons[] = (modules || []).map((module: any) => ({
+      const modulesWithLessons: ModuleWithLessons[] = (modules || []).map(module => ({
         ...module,
         learning_objectives: Array.isArray(module.learning_objectives)
           ? module.learning_objectives as string[]
           : [],
-        lessons: lessons.filter((l: any) => l.module_id === module.id),
+        lessons: lessons.filter(l => l.module_id === module.id),
       }));
 
       let enrollment = undefined;
@@ -89,13 +89,13 @@ export function useCourseDetails(courseId: string | undefined) {
       }
 
       const courseWithDetails: CourseWithDetails = {
-        ...(course as any),
-        curriculum: (course as any).curriculum as CourseWithDetails['curriculum'],
-        prerequisites: Array.isArray((course as any).prerequisites)
-          ? (course as any).prerequisites as string[]
+        ...course,
+        curriculum: course.curriculum as CourseWithDetails['curriculum'],
+        prerequisites: Array.isArray(course.prerequisites)
+          ? course.prerequisites as string[]
           : [],
-        learning_objectives: Array.isArray((course as any).learning_objectives)
-          ? (course as any).learning_objectives as string[]
+        learning_objectives: Array.isArray(course.learning_objectives)
+          ? course.learning_objectives as string[]
           : [],
         modules: modulesWithLessons,
         enrollment,
