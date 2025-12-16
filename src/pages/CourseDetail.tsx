@@ -23,32 +23,21 @@ export default function CourseDetail() {
   const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
 
   const handleContinueLearning = () => {
-    console.log('Continue Learning clicked');
-    console.log('courseDetails:', courseDetails);
-    console.log('nextLesson:', nextLesson);
-    console.log('courseId:', courseId);
-
     if (!courseDetails || !courseDetails.modules || courseDetails.modules.length === 0) {
-      console.log('No course details, navigating to dashboard');
       navigate('/dashboard');
       return;
     }
 
     if (nextLesson) {
-      console.log('Navigating to next lesson:', nextLesson.id);
       navigate(`/courses/${courseId}/lessons/${nextLesson.id}`);
       return;
     }
 
     const firstModule = courseDetails.modules[0];
-    console.log('First module:', firstModule);
-
     if (firstModule && firstModule.lessons && firstModule.lessons.length > 0) {
       const firstLesson = firstModule.lessons[0];
-      console.log('Navigating to first lesson:', firstLesson.id);
       navigate(`/courses/${courseId}/lessons/${firstLesson.id}`);
     } else {
-      console.log('No lessons found, navigating to dashboard');
       navigate('/dashboard');
     }
   };
