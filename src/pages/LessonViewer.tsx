@@ -12,7 +12,7 @@ export default function LessonViewer() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { courseDetails, loading } = useCourseDetails(courseId);
-  const { getEnrollment } = useEnrollments();
+  const { getEnrollment, loading: enrollmentsLoading } = useEnrollments();
   const enrollment = getEnrollment(courseId || '');
   const { moduleProgress, lessonProgress, startModule, completeLesson, getLessonProgress } = useModuleProgress(enrollment?.id);
 
@@ -27,11 +27,11 @@ export default function LessonViewer() {
       return;
     }
 
-    if (!enrollment) {
+    if (!enrollmentsLoading && !enrollment) {
       navigate(`/courses/${courseId}`);
       return;
     }
-  }, [user, enrollment, navigate, courseId]);
+  }, [user, enrollment, enrollmentsLoading, navigate, courseId]);
 
   useEffect(() => {
     if (!courseDetails || !lessonId) return;
@@ -130,7 +130,7 @@ export default function LessonViewer() {
     return progress?.completed || false;
   };
 
-  if (loading || !user) {
+  if (loading || enrollmentsLoading || !user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 flex items-center justify-center">
         <div className="text-center">
