@@ -8,7 +8,7 @@ export function useContinueLearning(courseDetails: CourseWithDetails | null, enr
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!courseDetails) {
+    if (!courseDetails || !courseDetails.modules || courseDetails.modules.length === 0) {
       setNextLesson(null);
       setLoading(false);
       return;
@@ -17,8 +17,10 @@ export function useContinueLearning(courseDetails: CourseWithDetails | null, enr
     const allLessons: CourseLesson[] = [];
 
     for (const module of courseDetails.modules) {
-      for (const lesson of module.lessons) {
-        allLessons.push(lesson);
+      if (module.lessons && module.lessons.length > 0) {
+        for (const lesson of module.lessons) {
+          allLessons.push(lesson);
+        }
       }
     }
 
