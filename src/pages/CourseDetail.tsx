@@ -22,6 +22,26 @@ export default function CourseDetail() {
   const [enrolling, setEnrolling] = useState(false);
   const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
 
+  const handleContinueLearning = () => {
+    if (!courseDetails || !courseDetails.modules || courseDetails.modules.length === 0) {
+      navigate('/dashboard');
+      return;
+    }
+
+    if (nextLesson) {
+      navigate(`/courses/${courseId}/lessons/${nextLesson.id}`);
+      return;
+    }
+
+    const firstModule = courseDetails.modules[0];
+    if (firstModule && firstModule.lessons && firstModule.lessons.length > 0) {
+      const firstLesson = firstModule.lessons[0];
+      navigate(`/courses/${courseId}/lessons/${firstLesson.id}`);
+    } else {
+      navigate('/dashboard');
+    }
+  };
+
   useEffect(() => {
     if (!user) {
       navigate('/signin');
@@ -332,14 +352,14 @@ export default function CourseDetail() {
                       <span>You're enrolled in this course</span>
                     </div>
                   </div>
-                  <Link
-                    to={nextLesson ? `/courses/${courseId}/lessons/${nextLesson.id}` : '/dashboard'}
-                    className="block w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-lg text-center transition-all transform hover:scale-105 mb-3"
+                  <button
+                    onClick={handleContinueLearning}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-lg text-center transition-all transform hover:scale-105 mb-3"
                   >
                     Continue Learning
-                  </Link>
+                  </button>
                   <p className="text-center text-sm text-gray-600">
-                    {nextLesson ? 'Continue where you left off' : 'Access your course from the dashboard'}
+                    {nextLesson ? 'Continue where you left off' : 'Start from the beginning'}
                   </p>
                 </div>
               ) : (
