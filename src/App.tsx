@@ -7,6 +7,7 @@ import Assessment from './pages/Assessment';
 import AssessmentResults from './pages/AssessmentResults';
 import Courses from './pages/Courses';
 import CourseDetail from './pages/CourseDetail';
+import LessonViewer from './pages/LessonViewer';
 import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import ManageCourses from './pages/ManageCourses';
@@ -25,6 +26,7 @@ function App() {
           <Route path="/assessment/results" element={<AssessmentResults />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/courses/:courseId" element={<CourseDetail />} />
+          <Route path="/courses/:courseId/lessons/:lessonId" element={<LessonViewer />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/courses" element={<ManageCourses />} />
