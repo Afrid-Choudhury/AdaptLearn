@@ -89,7 +89,9 @@ export function useModuleProgress(enrollmentId?: string) {
     lessonId: string,
     moduleId: string,
     moduleProgressId: string,
-    timeSpent: number = 0
+    timeSpent: number = 0,
+    xpReward: number = 100,
+    enrollmentId?: string
   ) => {
     if (!user) throw new Error('User must be authenticated');
 
@@ -104,6 +106,7 @@ export function useModuleProgress(enrollmentId?: string) {
           module_progress_id: moduleProgressId,
           completed: true,
           time_spent_minutes: timeSpent,
+          xp_earned: xpReward,
           started_at: now,
           completed_at: now,
           last_accessed: now,
@@ -133,6 +136,16 @@ export function useModuleProgress(enrollmentId?: string) {
         .single();
 
       if (moduleError) throw moduleError;
+
+      if (enrollmentId) {
+        await supabase
+          .from('course_enrollments')
+          .update({
+            total_xp: supabase.sql`total_xp + ${xpReward}`
+          })
+          .eq('id', enrollmentId)
+          .eq('user_id', user.id);
+      }
 
       setLessonProgress(prev => {
         const existing = prev.find(p => p.lesson_id === lessonId);
