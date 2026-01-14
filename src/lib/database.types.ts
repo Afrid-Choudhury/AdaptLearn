@@ -192,6 +192,7 @@ export interface Database {
           enrolled_at: string;
           completed_at: string | null;
           last_accessed: string;
+          total_xp: number;
         };
         Insert: {
           id?: string;
@@ -201,6 +202,7 @@ export interface Database {
           enrolled_at?: string;
           completed_at?: string | null;
           last_accessed?: string;
+          total_xp?: number;
         };
         Update: {
           id?: string;
@@ -210,6 +212,7 @@ export interface Database {
           enrolled_at?: string;
           completed_at?: string | null;
           last_accessed?: string;
+          total_xp?: number;
         };
       };
       course_modules: {
@@ -255,6 +258,10 @@ export interface Database {
           content_type: 'video' | 'reading' | 'exercise' | 'quiz';
           content_url: string | null;
           content_text: string | null;
+          validation_rules: Json | null;
+          starter_code: string | null;
+          solution_code: string | null;
+          xp_reward: number;
           created_at: string;
         };
         Insert: {
@@ -267,6 +274,10 @@ export interface Database {
           content_type?: 'video' | 'reading' | 'exercise' | 'quiz';
           content_url?: string | null;
           content_text?: string | null;
+          validation_rules?: Json | null;
+          starter_code?: string | null;
+          solution_code?: string | null;
+          xp_reward?: number;
           created_at?: string;
         };
         Update: {
@@ -279,6 +290,10 @@ export interface Database {
           content_type?: 'video' | 'reading' | 'exercise' | 'quiz';
           content_url?: string | null;
           content_text?: string | null;
+          validation_rules?: Json | null;
+          starter_code?: string | null;
+          solution_code?: string | null;
+          xp_reward?: number;
           created_at?: string;
         };
       };
@@ -328,6 +343,7 @@ export interface Database {
           module_progress_id: string;
           completed: boolean;
           time_spent_minutes: number;
+          xp_earned: number;
           started_at: string | null;
           completed_at: string | null;
           last_accessed: string;
@@ -339,6 +355,7 @@ export interface Database {
           module_progress_id: string;
           completed?: boolean;
           time_spent_minutes?: number;
+          xp_earned?: number;
           started_at?: string | null;
           completed_at?: string | null;
           last_accessed?: string;
@@ -350,6 +367,7 @@ export interface Database {
           module_progress_id?: string;
           completed?: boolean;
           time_spent_minutes?: number;
+          xp_earned?: number;
           started_at?: string | null;
           completed_at?: string | null;
           last_accessed?: string;
@@ -376,6 +394,32 @@ export interface Database {
           role?: 'admin' | 'instructor' | 'student';
           created_at?: string;
           assigned_by?: string | null;
+        };
+      };
+      lesson_code_drafts: {
+        Row: {
+          id: string;
+          user_id: string;
+          lesson_id: string;
+          code: string;
+          last_saved_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          lesson_id: string;
+          code: string;
+          last_saved_at?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          lesson_id?: string;
+          code?: string;
+          last_saved_at?: string;
+          created_at?: string;
         };
       };
     };
@@ -431,6 +475,13 @@ export interface CourseModule {
   created_at: string;
 }
 
+export interface ValidationRule {
+  mustContain?: string[];
+  regexMatch?: string;
+  mustNotContain?: string[];
+  methodSignatureExists?: string;
+}
+
 export interface CourseLesson {
   id: string;
   module_id: string;
@@ -441,6 +492,10 @@ export interface CourseLesson {
   content_type: 'video' | 'reading' | 'exercise' | 'quiz';
   content_url: string | null;
   content_text: string | null;
+  validation_rules: ValidationRule | null;
+  starter_code: string | null;
+  solution_code: string | null;
+  xp_reward: number;
   created_at: string;
 }
 
@@ -452,6 +507,7 @@ export interface CourseEnrollment {
   enrolled_at: string;
   completed_at: string | null;
   last_accessed: string;
+  total_xp: number;
 }
 
 export interface UserModuleProgress {
@@ -474,9 +530,19 @@ export interface UserLessonProgress {
   module_progress_id: string;
   completed: boolean;
   time_spent_minutes: number;
+  xp_earned: number;
   started_at: string | null;
   completed_at: string | null;
   last_accessed: string;
+}
+
+export interface LessonCodeDraft {
+  id: string;
+  user_id: string;
+  lesson_id: string;
+  code: string;
+  last_saved_at: string;
+  created_at: string;
 }
 
 export interface ModuleWithLessons extends CourseModule {

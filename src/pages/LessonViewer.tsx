@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { BookOpen, ChevronLeft, ChevronRight, CheckCircle, Clock, FileText, PlayCircle, Code, ClipboardCheck } from 'lucide-react';
+import { BookOpen, ChevronLeft, ChevronRight, CheckCircle, Clock, FileText, PlayCircle, Code, ClipboardCheck, Award } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useCourseDetails } from '../hooks/useCourseDetails';
 import { useEnrollments } from '../hooks/useEnrollments';
 import { useModuleProgress } from '../hooks/useModuleProgress';
 import { CourseLesson, ModuleWithLessons } from '../lib/database.types';
+import TryItPanel from '../components/TryItPanel';
 
 export default function LessonViewer() {
   const { courseId, lessonId } = useParams<{ courseId: string; lessonId: string }>();
@@ -94,7 +95,14 @@ export default function LessonViewer() {
 
     try {
       setCompletingLesson(true);
-      await completeLesson(currentLesson.id, currentModule.id, modProgress.id, currentLesson.estimated_minutes);
+      await completeLesson(
+        currentLesson.id,
+        currentModule.id,
+        modProgress.id,
+        currentLesson.estimated_minutes,
+        currentLesson.xp_reward,
+        enrollment.id
+      );
 
       const currentIndex = getCurrentLessonIndex();
       if (currentIndex < allLessons.length - 1) {
@@ -231,6 +239,10 @@ export default function LessonViewer() {
                   <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full font-semibold capitalize">
                     {currentLesson.content_type}
                   </span>
+                  <div className="flex items-center gap-1 text-amber-600">
+                    <Award className="w-4 h-4" />
+                    <span>{currentLesson.xp_reward} XP</span>
+                  </div>
                   {isCompleted && (
                     <div className="flex items-center gap-1 text-green-600">
                       <CheckCircle className="w-4 h-4" />
@@ -241,13 +253,19 @@ export default function LessonViewer() {
               </div>
 
               <div className="border-t border-gray-200 pt-6 mb-8">
-                <div className="prose prose-lg max-w-none">
+                <div className="prose prose-lg max-w-none mb-6">
                   {currentLesson.content_text ? (
                     <div className="whitespace-pre-wrap">{currentLesson.content_text}</div>
                   ) : (
                     <p className="text-gray-600">Lesson content coming soon...</p>
                   )}
                 </div>
+
+                {currentLesson.content_type === 'exercise' && currentLesson.validation_rules && (
+                  <div className="mt-6">
+                    <TryItPanel lesson={currentLesson} onSuccess={handleCompleteLesson} />
+                  </div>
+                )}
               </div>
 
               <div className="border-t border-gray-200 pt-6">
@@ -261,7 +279,7 @@ export default function LessonViewer() {
                     Previous
                   </button>
 
-                  {!isCompleted && (
+                  {!isCompleted && !(currentLesson.content_type === 'exercise' && currentLesson.validation_rules) && (
                     <button
                       onClick={handleCompleteLesson}
                       disabled={completingLesson}
