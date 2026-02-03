@@ -8,6 +8,9 @@ interface AuthContextType {
   signUp: (email: string, password: string, username?: string) => Promise<{ error: Error | null; data?: { user: User | null } }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
+  updatePassword: (newPassword: string) => Promise<{ error: Error | null }>;
+  updateEmail: (newEmail: string) => Promise<{ error: Error | null }>;
+  deleteAccount: () => Promise<{ error: Error | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -87,8 +90,56 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await supabase.auth.signOut();
   };
 
+  const updatePassword = async (newPassword: string) => {
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+      if (error) throw error;
+      return { error: null };
+    } catch (error) {
+      return { error: error as Error };
+    }
+  };
+
+  const updateEmail = async (newEmail: string) => {
+    try {
+      const { error } = await supabase.auth.updateUser({
+        email: newEmail,
+      });
+      if (error) throw error;
+      return { error: null };
+    } catch (error) {
+      return { error: error as Error };
+    }
+  };
+
+  const deleteAccount = async () => {
+    try {
+      if (!user) throw new Error('No user logged in');
+
+      await supabase.from('user_lesson_progress').delete().eq('user_id', user.id);
+      await supabase.from('user_module_progress').delete().eq('user_id', user.id);
+      await supabase.from('course_enrollments').delete().eq('user_id', user.id);
+      await supabase.from('user_achievements').delete().eq('user_id', user.id);
+      await supabase.from('user_assessment_results').delete().eq('user_id', user.id);
+      await supabase.from('user_notification_preferences').delete().eq('user_id', user.id);
+      await supabase.from('user_progress').delete().eq('user_id', user.id);
+      await supabase.from('lesson_code_drafts').delete().eq('user_id', user.id);
+      await supabase.from('email_log').delete().eq('user_id', user.id);
+      await supabase.from('user_roles').delete().eq('user_id', user.id);
+      await supabase.from('profiles').delete().eq('id', user.id);
+
+      await supabase.auth.signOut();
+
+      return { error: null };
+    } catch (error) {
+      return { error: error as Error };
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut, updatePassword, updateEmail, deleteAccount }}>
       {children}
     </AuthContext.Provider>
   );

@@ -153,10 +153,16 @@ export default function Dashboard() {
                   to="/admin"
                   className="flex items-center gap-2 text-gray-700 hover:text-blue-600 font-semibold transition-colors"
                 >
-                  <Settings className="w-5 h-5" />
                   Admin
                 </Link>
               )}
+              <Link
+                to="/settings"
+                className="flex items-center gap-2 text-gray-700 hover:text-blue-600 font-semibold transition-colors"
+              >
+                <Settings className="w-5 h-5" />
+                Settings
+              </Link>
               <button
                 onClick={handleSignOut}
                 className="flex items-center gap-2 text-gray-700 hover:text-red-600 font-semibold transition-colors"

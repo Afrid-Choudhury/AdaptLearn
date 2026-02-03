@@ -9,6 +9,7 @@ export interface WelcomeEmailData {
   email: string;
   assessmentUrl: string;
   dashboardUrl: string;
+  unsubscribeUrl?: string;
 }
 
 export interface PasswordRecoveryEmailData {
@@ -24,12 +25,14 @@ export interface AchievementEmailData {
   achievementIcon: string;
   totalAchievements: number;
   dashboardUrl: string;
+  unsubscribeUrl?: string;
 }
 
 export interface AssessmentReminderEmailData {
   username: string;
   assessmentUrl: string;
   estimatedMinutes: string;
+  unsubscribeUrl?: string;
 }
 
 const getBaseStyles = () => `
@@ -103,6 +106,16 @@ const getBaseStyles = () => `
     margin: 20px 0;
     border-radius: 4px;
   }
+  .unsubscribe {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+  }
+  .unsubscribe a {
+    color: #9ca3af;
+    text-decoration: underline;
+    font-size: 12px;
+  }
 `;
 
 export function generateWelcomeEmail(data: WelcomeEmailData): EmailTemplate {
@@ -157,6 +170,11 @@ export function generateWelcomeEmail(data: WelcomeEmailData): EmailTemplate {
             <a href="${data.assessmentUrl}" style="color: #2563eb; text-decoration: none;">Take Assessment</a>
           </p>
           <p style="margin-top: 20px; font-size: 12px;">© 2025 AdaptLearn. All rights reserved.</p>
+          ${data.unsubscribeUrl ? `
+          <div class="unsubscribe">
+            <a href="${data.unsubscribeUrl}">Manage email preferences or unsubscribe</a>
+          </div>
+          ` : ''}
         </div>
       </div>
     </body>
@@ -184,6 +202,7 @@ What you can do on AdaptLearn:
 Visit your dashboard: ${data.dashboardUrl}
 
 © 2025 AdaptLearn. All rights reserved.
+${data.unsubscribeUrl ? `\nManage email preferences: ${data.unsubscribeUrl}` : ''}
   `;
 
   return {
@@ -330,6 +349,11 @@ export function generateAchievementEmail(data: AchievementEmailData): EmailTempl
             <a href="${data.dashboardUrl}" style="color: #2563eb; text-decoration: none;">Dashboard</a>
           </p>
           <p style="margin-top: 20px; font-size: 12px;">© 2025 AdaptLearn. All rights reserved.</p>
+          ${data.unsubscribeUrl ? `
+          <div class="unsubscribe">
+            <a href="${data.unsubscribeUrl}">Manage email preferences or unsubscribe</a>
+          </div>
+          ` : ''}
         </div>
       </div>
     </body>
@@ -356,6 +380,7 @@ View All Achievements: ${data.dashboardUrl}
 What's next? Continue your learning journey to unlock even more achievements!
 
 © 2025 AdaptLearn. All rights reserved.
+${data.unsubscribeUrl ? `\nManage email preferences: ${data.unsubscribeUrl}` : ''}
   `;
 
   return {
@@ -427,6 +452,11 @@ export function generateAssessmentReminderEmail(data: AssessmentReminderEmailDat
             <a href="${data.assessmentUrl}" style="color: #2563eb; text-decoration: none;">Take Assessment</a>
           </p>
           <p style="margin-top: 20px; font-size: 12px;">© 2025 AdaptLearn. All rights reserved.</p>
+          ${data.unsubscribeUrl ? `
+          <div class="unsubscribe">
+            <a href="${data.unsubscribeUrl}">Manage email preferences or unsubscribe</a>
+          </div>
+          ` : ''}
         </div>
       </div>
     </body>
@@ -459,6 +489,7 @@ What happens after the assessment?
 Don't worry - there are no wrong answers! The assessment simply helps us understand where you are in your learning journey so we can recommend the best courses for you.
 
 © 2025 AdaptLearn. All rights reserved.
+${data.unsubscribeUrl ? `\nManage email preferences: ${data.unsubscribeUrl}` : ''}
   `;
 
   return {
