@@ -11,6 +11,8 @@ interface SendEmailRequest {
   subject: string;
   html: string;
   text: string;
+  fromName?: string;
+  fromEmail?: string;
 }
 
 Deno.serve(async (req: Request) => {
@@ -27,7 +29,7 @@ Deno.serve(async (req: Request) => {
       throw new Error("RESEND_API_KEY is not configured");
     }
 
-    const { to, subject, html, text }: SendEmailRequest = await req.json();
+    const { to, subject, html, text, fromName, fromEmail }: SendEmailRequest = await req.json();
 
     if (!to || !subject || !html) {
       return new Response(
@@ -42,8 +44,15 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const verifiedEmail = "afridchoudhury@icloud.com";
-    const isTestingMode = resendApiKey.startsWith("re_");
+    const configuredFromEmail = Deno.env.get("EMAIL_FROM_ADDRESS") || "onboarding@resend.dev";
+    const configuredFromName = Deno.env.get("EMAIL_FROM_NAME") || "AdaptLearn";
+
+    const finalFromName = fromName || configuredFromName;
+    const finalFromEmail = fromEmail || configuredFromEmail;
+    const fromAddress = `${finalFromName} <${finalFromEmail}>`;
+
+    const verifiedEmail = Deno.env.get("RESEND_VERIFIED_EMAIL") || "afridchoudhury@icloud.com";
+    const isTestingMode = !Deno.env.get("EMAIL_FROM_ADDRESS") && resendApiKey.startsWith("re_");
     const recipientEmail = isTestingMode ? verifiedEmail : to;
 
     if (isTestingMode && to !== verifiedEmail) {
@@ -57,7 +66,7 @@ Deno.serve(async (req: Request) => {
         "Authorization": `Bearer ${resendApiKey}`,
       },
       body: JSON.stringify({
-        from: "AdaptLearn <onboarding@resend.dev>",
+        from: fromAddress,
         to: [recipientEmail],
         subject: isTestingMode && to !== verifiedEmail
           ? `[TEST for ${to}] ${subject}`
