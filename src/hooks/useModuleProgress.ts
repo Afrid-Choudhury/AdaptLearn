@@ -138,13 +138,10 @@ export function useModuleProgress(enrollmentId?: string) {
       if (moduleError) throw moduleError;
 
       if (enrollmentId) {
-        await supabase
-          .from('course_enrollments')
-          .update({
-            total_xp: supabase.sql`total_xp + ${xpReward}`
-          })
-          .eq('id', enrollmentId)
-          .eq('user_id', user.id);
+        await supabase.rpc('increment_enrollment_xp', {
+          p_enrollment_id: enrollmentId,
+          p_xp_amount: xpReward
+        });
       }
 
       setLessonProgress(prev => {

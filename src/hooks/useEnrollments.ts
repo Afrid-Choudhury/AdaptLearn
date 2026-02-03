@@ -58,10 +58,9 @@ export function useEnrollments() {
 
       if (error) throw error;
 
-      await supabase
-        .from('courses')
-        .update({ student_count: supabase.sql`student_count + 1` })
-        .eq('id', courseId);
+      await supabase.rpc('increment_course_student_count', {
+        p_course_id: courseId
+      });
 
       setEnrollments(prev => [data, ...prev]);
 
@@ -99,10 +98,9 @@ export function useEnrollments() {
 
       if (error) throw error;
 
-      await supabase
-        .from('courses')
-        .update({ student_count: supabase.sql`GREATEST(student_count - 1, 0)` })
-        .eq('id', courseId);
+      await supabase.rpc('decrement_course_student_count', {
+        p_course_id: courseId
+      });
 
       setEnrollments(prev =>
         prev.map(e => e.id === enrollmentId ? { ...e, status: 'dropped' as const } : e)
