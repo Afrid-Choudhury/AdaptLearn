@@ -241,16 +241,16 @@ export default function LessonViewer() {
             ${sidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'}
           `}
         >
-          <div className="h-full flex flex-col">
+          <div className="h-full flex flex-col overflow-hidden">
             <div className="px-5 py-4 border-b border-gray-100">
               <h3 className="font-semibold text-gray-900 text-sm">Course Contents</h3>
               {moduleProgressInfo && (
-                <div className="mt-2">
+                <div className="mt-2 overflow-hidden">
                   <div className="flex justify-between text-xs text-gray-500 mb-1">
                     <span>{moduleProgressInfo.completed_lessons} of {moduleProgressInfo.total_lessons} done</span>
                     <span>{Math.round((moduleProgressInfo.completed_lessons / moduleProgressInfo.total_lessons) * 100)}%</span>
                   </div>
-                  <div className="w-full bg-gray-100 rounded-full h-1">
+                  <div className="bg-gray-100 rounded-full h-1">
                     <div
                       className="bg-teal-500 h-1 rounded-full transition-all duration-500"
                       style={{ width: `${(moduleProgressInfo.completed_lessons / moduleProgressInfo.total_lessons) * 100}%` }}
