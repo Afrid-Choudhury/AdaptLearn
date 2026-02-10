@@ -11,6 +11,7 @@ import { useEnrollments } from '../hooks/useEnrollments';
 import { useModuleProgress } from '../hooks/useModuleProgress';
 import { CourseLesson, ModuleWithLessons } from '../lib/database.types';
 import TryItPanel from '../components/TryItPanel';
+import CodePlayground from '../components/CodePlayground';
 import MarkdownContent from '../lib/markdown-renderer';
 
 export default function LessonViewer() {
@@ -396,6 +397,12 @@ export default function LessonViewer() {
             {currentLesson.content_type === 'exercise' && currentLesson.validation_rules && (
               <div className="mt-8">
                 <TryItPanel lesson={currentLesson} onSuccess={handleCompleteLesson} />
+              </div>
+            )}
+
+            {currentLesson.content_type === 'quiz' && (
+              <div className="mt-8">
+                <CodePlayground lessonId={currentLesson.id} />
               </div>
             )}
 
