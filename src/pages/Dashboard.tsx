@@ -33,7 +33,22 @@ export default function Dashboard() {
     fetchAssessmentResult();
     fetchEnrolledCourses();
     fetchTotalXP();
+    checkAchievements();
   }, [user, navigate]);
+
+  const checkAchievements = async () => {
+    if (!user) return;
+
+    try {
+      await supabase.rpc('check_all_achievements', {
+        p_user_id: user.id
+      });
+    } catch (err) {
+      if (import.meta.env.DEV) {
+        console.error('Error checking achievements:', err);
+      }
+    }
+  };
 
   useEffect(() => {
     if (enrollments.length > 0) {
