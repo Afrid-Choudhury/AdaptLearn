@@ -17,6 +17,7 @@ import Leaderboard from './pages/Leaderboard';
 import AdminDashboard from './pages/AdminDashboard';
 import ManageCourses from './pages/ManageCourses';
 import CourseBuilder from './pages/CourseBuilder';
+import ManageTestCases from './pages/ManageTestCases';
 import EmailTest from './pages/EmailTest';
 import Unsubscribe from './pages/Unsubscribe';
 
@@ -44,6 +45,7 @@ function App() {
           <Route path="/admin/courses" element={<ManageCourses />} />
           <Route path="/admin/courses/new" element={<CourseBuilder />} />
           <Route path="/admin/courses/:courseId/edit" element={<CourseBuilder />} />
+          <Route path="/admin/lessons/:lessonId/test-cases" element={<ManageTestCases />} />
           <Route path="/email-test" element={<EmailTest />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

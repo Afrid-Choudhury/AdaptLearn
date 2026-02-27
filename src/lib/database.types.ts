@@ -496,6 +496,10 @@ export interface CourseLesson {
   starter_code: string | null;
   solution_code: string | null;
   xp_reward: number;
+  execution_enabled: boolean;
+  test_case_mode: 'output_match' | 'unit_test' | 'custom_validator';
+  max_execution_time: number;
+  max_memory_mb: number;
   created_at: string;
 }
 

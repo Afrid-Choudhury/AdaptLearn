@@ -396,7 +396,7 @@ export default function LessonViewer() {
 
             {currentLesson.content_type === 'exercise' && currentLesson.validation_rules && (
               <div className="mt-8">
-                <TryItPanel lesson={currentLesson} onSuccess={handleCompleteLesson} />
+                <TryItPanel lesson={currentLesson} enrollmentId={enrollment?.id} onSuccess={handleCompleteLesson} />
               </div>
             )}
 
