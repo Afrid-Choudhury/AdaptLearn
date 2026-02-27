@@ -1,24 +1,28 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { BookOpen, User, Target, Clock, TrendingUp, Award, LogOut, CheckCircle, Play, Settings } from 'lucide-react';
+import { BookOpen, User, Target, Clock, TrendingUp, Award, LogOut, CheckCircle, Play, Settings, Trophy } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useProfile } from '../hooks/useProfile';
 import { useEnrollments } from '../hooks/useEnrollments';
 import { useUserRole } from '../hooks/useUserRole';
 import { useWelcomeEmail } from '../hooks/useWelcomeEmail';
+import { useAchievements } from '../hooks/useAchievements';
 import { supabase } from '../lib/supabase';
 import { Course } from '../lib/database.types';
+import AchievementBadge from '../components/AchievementBadge';
 
 export default function Dashboard() {
   const { user, signOut } = useAuth();
   const { profile, loading } = useProfile();
   const { enrollments, loading: enrollmentsLoading } = useEnrollments();
   const { isAdminOrInstructor } = useUserRole();
+  const { achievements, unlockedCount, totalCount } = useAchievements(user?.id);
   useWelcomeEmail();
   const navigate = useNavigate();
   const [assessmentResult, setAssessmentResult] = useState<any>(null);
   const [loadingAssessment, setLoadingAssessment] = useState(true);
   const [enrolledCourses, setEnrolledCourses] = useState<Course[]>([]);
+  const [totalXP, setTotalXP] = useState<number>(0);
 
   useEffect(() => {
     if (!user) {
@@ -28,6 +32,7 @@ export default function Dashboard() {
 
     fetchAssessmentResult();
     fetchEnrolledCourses();
+    fetchTotalXP();
   }, [user, navigate]);
 
   useEffect(() => {
@@ -102,6 +107,26 @@ export default function Dashboard() {
     } catch (err) {
       if (import.meta.env.DEV) {
         console.error('Error fetching enrolled courses:', err);
+      }
+    }
+  };
+
+  const fetchTotalXP = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('course_enrollments')
+        .select('total_xp')
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      const total = data?.reduce((sum, enrollment) => sum + (enrollment.total_xp || 0), 0) || 0;
+      setTotalXP(total);
+    } catch (err) {
+      if (import.meta.env.DEV) {
+        console.error('Error fetching total XP:', err);
       }
     }
   };
@@ -346,15 +371,74 @@ export default function Dashboard() {
             </div>
 
             <div className="bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl shadow-xl p-8 text-white">
-              <div className="flex items-center gap-3 mb-4">
-                <Award className="w-8 h-8" />
-                <h2 className="text-2xl font-bold">Achievements</h2>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <Award className="w-8 h-8" />
+                  <h2 className="text-2xl font-bold">Achievements</h2>
+                </div>
+                <Link
+                  to="/achievements"
+                  className="text-sm text-blue-100 hover:text-white transition-colors"
+                >
+                  View All
+                </Link>
               </div>
               <p className="text-blue-100 mb-6">
-                Complete courses and assessments to unlock badges and achievements!
+                {unlockedCount} of {totalCount} achievements unlocked
               </p>
-              <div className="text-center py-8 bg-white/10 rounded-lg">
-                <p className="text-blue-100">No achievements yet</p>
+              {unlockedCount > 0 ? (
+                <div>
+                  <div className="grid grid-cols-4 gap-4 mb-4">
+                    {achievements
+                      .filter(a => a.unlocked)
+                      .slice(0, 4)
+                      .map((achievement) => (
+                        <div key={achievement.id} className="flex justify-center">
+                          <AchievementBadge
+                            name={achievement.name}
+                            description={achievement.description}
+                            icon={achievement.icon}
+                            unlocked={achievement.unlocked}
+                            unlockedAt={achievement.unlocked_at}
+                            size="small"
+                          />
+                        </div>
+                      ))}
+                  </div>
+                  {unlockedCount > 4 && (
+                    <Link
+                      to="/achievements"
+                      className="block text-center text-sm text-blue-100 hover:text-white transition-colors"
+                    >
+                      +{unlockedCount - 4} more
+                    </Link>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center py-8 bg-white/10 rounded-lg">
+                  <p className="text-blue-100">No achievements yet</p>
+                  <p className="text-sm text-blue-200 mt-2">Start learning to unlock badges!</p>
+                </div>
+              )}
+            </div>
+
+            <div className="bg-white rounded-2xl shadow-xl p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <Trophy className="w-6 h-6 text-blue-600" />
+                <h2 className="text-2xl font-bold text-gray-900">Total XP</h2>
+              </div>
+              <div className="text-center">
+                <div className="text-5xl font-bold text-blue-600 mb-2">
+                  {totalXP.toLocaleString()}
+                </div>
+                <p className="text-gray-600 mb-4">Experience Points</p>
+                <Link
+                  to="/leaderboard"
+                  className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors"
+                >
+                  <Trophy className="w-4 h-4" />
+                  View Leaderboard
+                </Link>
               </div>
             </div>
           </div>

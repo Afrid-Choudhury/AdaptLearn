@@ -291,7 +291,10 @@ export default function Assessment() {
           .update({ skill_level: skillLevel })
           .eq('id', user.id);
 
-        checkAndAwardAchievement(user.id, 'assessment_score', { score }).catch(() => {});
+        await supabase.rpc('check_assessment_achievements', {
+          p_user_id: user.id,
+          p_score: score
+        }).catch(() => {});
 
         navigate('/courses', { state: { score, answers: finalAnswers, timeTaken, questions } });
       } catch {
