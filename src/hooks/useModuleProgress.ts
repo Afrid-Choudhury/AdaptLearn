@@ -156,6 +156,14 @@ export function useModuleProgress(enrollmentId?: string) {
         prev.map(p => p.id === moduleProgressId ? updatedModuleProgress : p)
       );
 
+      await supabase.rpc('check_completion_achievements', {
+        p_user_id: user.id
+      }).catch(err => {
+        if (import.meta.env.DEV) {
+          console.error('Failed to check completion achievements:', err);
+        }
+      });
+
       return { lessonProgress: lessonData, moduleProgress: updatedModuleProgress };
     } catch (err) {
       throw err;

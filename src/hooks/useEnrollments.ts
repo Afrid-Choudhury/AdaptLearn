@@ -64,14 +64,9 @@ export function useEnrollments() {
 
       setEnrollments(prev => [data, ...prev]);
 
-      const activeEnrollments = await supabase
-        .from('course_enrollments')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('status', 'active');
-
-      const enrollmentCount = activeEnrollments.data?.length || 0;
-      checkAndAwardAchievement(user.id, 'enrollment', { count: enrollmentCount }).catch(err => {
+      await supabase.rpc('check_enrollment_achievements', {
+        p_user_id: user.id
+      }).catch(err => {
         if (import.meta.env.DEV) {
           console.error('Failed to check enrollment achievements:', err);
         }

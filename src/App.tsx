@@ -12,6 +12,8 @@ import CourseDetail from './pages/CourseDetail';
 import LessonViewer from './pages/LessonViewer';
 import Dashboard from './pages/Dashboard';
 import Settings from './pages/Settings';
+import Achievements from './pages/Achievements';
+import Leaderboard from './pages/Leaderboard';
 import AdminDashboard from './pages/AdminDashboard';
 import ManageCourses from './pages/ManageCourses';
 import CourseBuilder from './pages/CourseBuilder';
@@ -35,6 +37,8 @@ function App() {
           <Route path="/courses/:courseId/lessons/:lessonId" element={<LessonViewer />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/achievements" element={<Achievements />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/unsubscribe" element={<Unsubscribe />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/courses" element={<ManageCourses />} />
