@@ -60,7 +60,7 @@ export default function AchievementBadge({
           {name}
         </div>
         {unlocked && unlockedAt && (
-          <div className="text-xs text-green-700 font-medium mt-0.5">
+          <div className="text-xs text-gray-900 font-medium mt-0.5">
             {new Date(unlockedAt).toLocaleDateString('en-US', {
               month: 'short',
               day: 'numeric'
