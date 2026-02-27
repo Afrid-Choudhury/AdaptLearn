@@ -26,7 +26,7 @@ export default function AchievementBadge({
   const badgeSize = sizeClasses[size];
 
   return (
-    <div className={`group relative ${unlocked ? '' : 'opacity-50'}`}>
+    <div className={`group relative flex flex-col items-center ${unlocked ? '' : 'opacity-50'}`}>
       <div
         className={`
           ${badgeSize}
@@ -35,25 +35,39 @@ export default function AchievementBadge({
           transition-all duration-300
           ${unlocked
             ? 'bg-gradient-to-br from-yellow-400 via-orange-400 to-yellow-500 shadow-lg hover:shadow-xl hover:scale-110'
-            : 'bg-gray-700 border-2 border-gray-600 hover:border-gray-500'
+            : 'bg-gray-300 border-2 border-gray-400 hover:border-gray-500'
           }
         `}
       >
         <span className="relative">
           {icon}
           {!unlocked && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-900/70 rounded-full">
-              <Lock className="w-6 h-6 text-gray-400" />
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-600/80 rounded-full">
+              <Lock className="w-6 h-6 text-gray-200" />
             </div>
           )}
         </span>
       </div>
 
       {unlocked && (
-        <div className="absolute -top-1 -right-1 bg-green-500 rounded-full p-1">
+        <div className="absolute -top-1 -right-1 bg-green-600 rounded-full p-1">
           <CheckCircle2 className="w-4 h-4 text-white" />
         </div>
       )}
+
+      <div className="mt-2 text-center">
+        <div className={`text-sm font-bold ${unlocked ? 'text-gray-900' : 'text-gray-600'}`}>
+          {name}
+        </div>
+        {unlocked && unlockedAt && (
+          <div className="text-xs text-green-700 font-medium mt-0.5">
+            {new Date(unlockedAt).toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric'
+            })}
+          </div>
+        )}
+      </div>
 
       <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
         <div className="bg-gray-900 text-white px-3 py-2 rounded-lg shadow-xl text-center min-w-[200px]">

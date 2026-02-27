@@ -47,8 +47,8 @@ export default function AchievementCard({
       className={`
         relative overflow-hidden rounded-xl p-6 transition-all duration-300
         ${unlocked
-          ? 'bg-gradient-to-br from-yellow-500/10 via-orange-500/10 to-yellow-500/10 border-2 border-yellow-500/30 hover:border-yellow-500/50 hover:shadow-lg hover:shadow-yellow-500/20'
-          : 'bg-gray-800/50 border-2 border-gray-700 hover:border-gray-600'
+          ? 'bg-white border-2 border-yellow-500 hover:border-yellow-600 hover:shadow-xl hover:shadow-yellow-500/20'
+          : 'bg-gray-50 border-2 border-gray-300 hover:border-gray-400'
         }
       `}
     >
@@ -58,15 +58,15 @@ export default function AchievementCard({
             w-16 h-16 rounded-full flex items-center justify-center text-3xl flex-shrink-0 transition-all
             ${unlocked
               ? 'bg-gradient-to-br from-yellow-400 via-orange-400 to-yellow-500 shadow-lg'
-              : 'bg-gray-700 border-2 border-gray-600'
+              : 'bg-gray-300 border-2 border-gray-400'
             }
           `}
         >
           <span className="relative">
             {icon}
             {!unlocked && (
-              <div className="absolute inset-0 flex items-center justify-center bg-gray-900/70 rounded-full">
-                <Lock className="w-5 h-5 text-gray-400" />
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-600/80 rounded-full">
+                <Lock className="w-5 h-5 text-gray-200" />
               </div>
             )}
           </span>
@@ -74,26 +74,30 @@ export default function AchievementCard({
 
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2 mb-2">
-            <h3 className={`font-semibold text-lg ${unlocked ? 'text-white' : 'text-gray-300'}`}>
+            <h3 className={`font-bold text-xl ${unlocked ? 'text-gray-900' : 'text-gray-700'}`}>
               {name}
             </h3>
             {unlocked && (
-              <CheckCircle2 className="w-6 h-6 text-green-500 flex-shrink-0" />
+              <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0" />
             )}
           </div>
 
-          <p className={`text-sm mb-3 ${unlocked ? 'text-gray-300' : 'text-gray-400'}`}>
+          <p className={`text-base mb-4 ${unlocked ? 'text-gray-700' : 'text-gray-600'}`}>
             {description}
           </p>
 
-          <div className="flex items-center gap-2 text-xs text-gray-400 mb-3">
-            <span className="px-2 py-1 bg-gray-700/50 rounded">
+          <div className="flex items-center gap-2 text-sm mb-3">
+            <span className={`px-3 py-1.5 rounded-lg font-medium ${
+              unlocked
+                ? 'bg-blue-100 text-blue-800'
+                : 'bg-gray-200 text-gray-700'
+            }`}>
               {getCriteriaDescription()}
             </span>
           </div>
 
           {unlocked && unlockedAt && (
-            <div className="flex items-center gap-2 text-sm text-green-400">
+            <div className="flex items-center gap-2 text-sm text-green-700 font-medium">
               <Calendar className="w-4 h-4" />
               <span>
                 Unlocked on {new Date(unlockedAt).toLocaleDateString('en-US', {
@@ -107,11 +111,11 @@ export default function AchievementCard({
 
           {!unlocked && progress > 0 && (
             <div className="mt-3">
-              <div className="flex items-center justify-between text-xs text-gray-400 mb-1">
+              <div className="flex items-center justify-between text-sm text-gray-700 font-medium mb-1">
                 <span>Progress</span>
                 <span>{Math.round(progress)}%</span>
               </div>
-              <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+              <div className="h-2 bg-gray-300 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 transition-all duration-500"
                   style={{ width: `${Math.min(progress, 100)}%` }}
@@ -123,7 +127,7 @@ export default function AchievementCard({
       </div>
 
       {unlocked && (
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-yellow-500/10 to-transparent rounded-bl-full" />
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-yellow-400/10 to-transparent rounded-bl-full" />
       )}
     </div>
   );
