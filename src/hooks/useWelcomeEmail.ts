@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { sendWelcomeEmail, checkAndAwardAchievement } from '../lib/email-service';
+import { sendWelcomeEmail } from '../lib/email-service';
+import { supabase } from '../lib/supabase';
 
 export function useWelcomeEmail() {
   const { user } = useAuth();
@@ -26,9 +27,11 @@ export function useWelcomeEmail() {
             }
           });
 
-          checkAndAwardAchievement(user.id, 'custom', { action: 'signup' }).catch(err => {
+          supabase.rpc('check_all_achievements', {
+            p_user_id: user.id
+          }).catch(err => {
             if (import.meta.env.DEV) {
-              console.error('Failed to award signup achievement:', err);
+              console.error('Failed to check achievements:', err);
             }
           });
         }, 2000);
