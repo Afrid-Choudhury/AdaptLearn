@@ -388,7 +388,7 @@ export default function Dashboard() {
               </p>
               {unlockedCount > 0 ? (
                 <div>
-                  <div className="grid grid-cols-4 gap-4 mb-4">
+                  <div className="grid grid-cols-2 gap-6 mb-4">
                     {achievements
                       .filter(a => a.unlocked)
                       .slice(0, 4)
@@ -408,15 +408,15 @@ export default function Dashboard() {
                   {unlockedCount > 4 && (
                     <Link
                       to="/achievements"
-                      className="block text-center text-sm text-blue-100 hover:text-white transition-colors"
+                      className="block text-center text-sm font-semibold text-white bg-white/20 hover:bg-white/30 py-2 rounded-lg transition-colors"
                     >
-                      +{unlockedCount - 4} more
+                      +{unlockedCount - 4} more achievements
                     </Link>
                   )}
                 </div>
               ) : (
                 <div className="text-center py-8 bg-white/10 rounded-lg">
-                  <p className="text-blue-100">No achievements yet</p>
+                  <p className="text-blue-100 font-medium">No achievements yet</p>
                   <p className="text-sm text-blue-200 mt-2">Start learning to unlock badges!</p>
                 </div>
               )}
