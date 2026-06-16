@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Target, TrendingUp, Clock, Users, Award, CheckCircle, ArrowRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { usePlatformStats } from '../hooks/usePlatformStats';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import FloatingShapes from '../components/decorations/FloatingShapes';
@@ -11,6 +12,7 @@ import IconCircle from '../components/ui/IconCircle';
 
 export default function Home() {
   const { user } = useAuth();
+  const { stats, loading: statsLoading } = usePlatformStats();
 
   return (
     <div className="min-h-screen bg-cream">
@@ -61,21 +63,27 @@ export default function Home() {
               <IconCircle color="accent" size="sm" className="mx-auto mb-4">
                 <Users className="w-5 h-5" strokeWidth={2.5} />
               </IconCircle>
-              <div className="text-3xl font-heading font-bold text-foreground mb-1">29,600+</div>
+              <div className="text-3xl font-heading font-bold text-foreground mb-1">
+                {statsLoading ? '--' : stats?.totalUsers.toLocaleString()}
+              </div>
               <div className="text-slate-500 font-body">Active Learners</div>
             </Card>
             <Card hoverEffect className="p-6 text-center shadow-pop-yellow">
               <IconCircle color="tertiary" size="sm" className="mx-auto mb-4">
                 <Award className="w-5 h-5" strokeWidth={2.5} />
               </IconCircle>
-              <div className="text-3xl font-heading font-bold text-foreground mb-1">4.8/5</div>
+              <div className="text-3xl font-heading font-bold text-foreground mb-1">
+                {statsLoading ? '--' : `${stats?.avgRating}/5`}
+              </div>
               <div className="text-slate-500 font-body">Average Rating</div>
             </Card>
             <Card hoverEffect className="p-6 text-center shadow-pop-green">
               <IconCircle color="quaternary" size="sm" className="mx-auto mb-4">
                 <CheckCircle className="w-5 h-5" strokeWidth={2.5} />
               </IconCircle>
-              <div className="text-3xl font-heading font-bold text-foreground mb-1">94%</div>
+              <div className="text-3xl font-heading font-bold text-foreground mb-1">
+                {statsLoading ? '--' : `${stats?.completionRate}%`}
+              </div>
               <div className="text-slate-500 font-body">Completion Rate</div>
             </Card>
           </div>
