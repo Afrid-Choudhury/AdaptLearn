@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
-import { CheckCircle, RotateCcw, Save, AlertCircle, Play, Clock, Award } from 'lucide-react';
+import { CheckCircle, RotateCcw, Save, AlertCircle, Play, Clock, Award, Eye, EyeOff } from 'lucide-react';
 import { CourseLesson } from '../lib/database.types';
 import { validateCode, ValidationResult } from '../lib/code-validator';
 import { supabase } from '../lib/supabase';
@@ -21,6 +21,8 @@ export default function TryItPanel({ lesson, enrollmentId, onSuccess }: TryItPan
   const [isChecking, setIsChecking] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
+  const [showSolution, setShowSolution] = useState(false);
+  const [attemptCount, setAttemptCount] = useState(0);
   const { executeCode, isExecuting, executionResult, error: executionError, clearResults } = useCodeExecution();
 
   useEffect(() => {
@@ -116,6 +118,8 @@ export default function TryItPanel({ lesson, enrollmentId, onSuccess }: TryItPan
       setTimeout(() => {
         onSuccess();
       }, 1000);
+    } else {
+      setAttemptCount(prev => prev + 1);
     }
 
     setIsChecking(false);
@@ -143,6 +147,8 @@ export default function TryItPanel({ lesson, enrollmentId, onSuccess }: TryItPan
       setTimeout(() => {
         onSuccess();
       }, 2000);
+    } else if (result && !result.passedAllTests) {
+      setAttemptCount(prev => prev + 1);
     }
   };
 
@@ -390,6 +396,56 @@ export default function TryItPanel({ lesson, enrollmentId, onSuccess }: TryItPan
             <p className="text-blue-800 text-sm">
               Sign in to run your code and earn XP!
             </p>
+          </div>
+        )}
+
+        {lesson.solution_code && (
+          <div className="mt-6 border-t border-gray-200 pt-6">
+            {!showSolution ? (
+              <button
+                onClick={() => {
+                  if (attemptCount >= 2) {
+                    setShowSolution(true);
+                  } else {
+                    const confirmed = window.confirm(
+                      'Are you sure you want to see the solution? Try solving it yourself first for the best learning experience.'
+                    );
+                    if (confirmed) setShowSolution(true);
+                  }
+                }}
+                className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 rounded-lg border border-gray-200 transition-all"
+              >
+                <Eye className="w-4 h-4" />
+                {attemptCount >= 2 ? 'Show Solution' : 'Peek at Solution'}
+              </button>
+            ) : (
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                    <Eye className="w-4 h-4" />
+                    Reference Solution
+                  </h4>
+                  <button
+                    onClick={() => setShowSolution(false)}
+                    className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-700 transition-colors"
+                  >
+                    <EyeOff className="w-3.5 h-3.5" />
+                    Hide
+                  </button>
+                </div>
+                <div className="border border-gray-200 rounded-lg overflow-hidden">
+                  <div className="flex items-center justify-between px-4 py-2 bg-slate-800 border-b border-slate-700">
+                    <span className="text-xs font-mono text-slate-400 uppercase tracking-wider">java</span>
+                  </div>
+                  <pre className="bg-slate-900 p-4 overflow-x-auto text-sm leading-relaxed font-mono text-slate-200 whitespace-pre">
+                    {lesson.solution_code}
+                  </pre>
+                </div>
+                <p className="mt-2 text-xs text-gray-500">
+                  This is one possible solution. Your approach may differ and still be correct.
+                </p>
+              </div>
+            )}
           </div>
         )}
 
