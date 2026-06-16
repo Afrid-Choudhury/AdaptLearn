@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
   BookOpen, ChevronLeft, ChevronRight, CheckCircle, Clock,
-  FileText, PlayCircle, Code, ClipboardCheck, Award, Menu, X,
+  FileText, Code, ClipboardCheck, Award, Menu, X,
   Layers, ArrowLeft
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -131,7 +131,7 @@ export default function LessonViewer() {
     const cls = size || 'w-5 h-5';
     switch (contentType) {
       case 'video':
-        return <PlayCircle className={cls} />;
+        return <BookOpen className={cls} />;
       case 'reading':
         return <FileText className={cls} />;
       case 'exercise':
@@ -145,7 +145,7 @@ export default function LessonViewer() {
 
   const getContentLabel = (contentType: string) => {
     switch (contentType) {
-      case 'video': return 'Video Lesson';
+      case 'video': return 'Lesson';
       case 'reading': return 'Reading';
       case 'exercise': return 'Hands-on Exercise';
       case 'quiz': return 'Quiz';

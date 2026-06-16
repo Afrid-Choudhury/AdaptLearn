@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
   BookOpen, Clock, Users, Star, ChevronDown, ChevronUp,
-  PlayCircle, FileText, Code, ClipboardCheck, Target, CheckCircle, Lock
+  FileText, Code, ClipboardCheck, Target, CheckCircle, Lock
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useCourseDetails } from '../hooks/useCourseDetails';
@@ -97,7 +97,7 @@ export default function CourseDetail() {
   const getContentIcon = (contentType: string) => {
     switch (contentType) {
       case 'video':
-        return <PlayCircle className="w-4 h-4" />;
+        return <BookOpen className="w-4 h-4" />;
       case 'reading':
         return <FileText className="w-4 h-4" />;
       case 'exercise':
