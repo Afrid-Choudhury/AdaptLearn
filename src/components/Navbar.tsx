@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { BookOpen, Menu, X } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { BookOpen, Menu, X, LogOut, Settings, Trophy, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 interface NavbarProps {
@@ -8,8 +8,14 @@ interface NavbarProps {
 }
 
 export default function Navbar({ variant = 'public' }: NavbarProps) {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   return (
     <nav className="bg-cream border-b-2 border-foreground sticky top-0 z-50">
@@ -22,7 +28,7 @@ export default function Navbar({ variant = 'public' }: NavbarProps) {
             <span className="text-xl font-heading font-bold text-foreground">AdaptLearn</span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-1">
             {variant === 'public' && !user && (
               <>
                 <Link
@@ -39,13 +45,50 @@ export default function Navbar({ variant = 'public' }: NavbarProps) {
                 </Link>
               </>
             )}
-            {(variant === 'public' && user) && (
+            {variant === 'public' && user && (
               <Link
                 to="/dashboard"
                 className="px-5 py-2 rounded-full font-bold text-white bg-accent border-2 border-foreground shadow-pop hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-pop-hover active:translate-x-0.5 active:translate-y-0.5 active:shadow-pop-active transition-all duration-300 ease-bounce"
               >
                 Dashboard
               </Link>
+            )}
+            {variant === 'authenticated' && (
+              <>
+                <Link
+                  to="/dashboard"
+                  className="px-4 py-2 rounded-full font-bold text-foreground hover:bg-slate-100 transition-all duration-300 text-sm"
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  to="/courses"
+                  className="px-4 py-2 rounded-full font-bold text-foreground hover:bg-slate-100 transition-all duration-300 text-sm"
+                >
+                  Courses
+                </Link>
+                <Link
+                  to="/leaderboard"
+                  className="px-4 py-2 rounded-full font-bold text-foreground hover:bg-slate-100 transition-all duration-300 text-sm"
+                >
+                  Leaderboard
+                </Link>
+                <div className="w-px h-6 bg-slate-300 mx-2" />
+                <Link
+                  to="/settings"
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-foreground hover:bg-slate-100 transition-all duration-300"
+                  aria-label="Settings"
+                >
+                  <Settings className="w-4.5 h-4.5" strokeWidth={2} />
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-foreground hover:bg-red-50 hover:text-red-600 transition-all duration-300"
+                  aria-label="Sign out"
+                >
+                  <LogOut className="w-4.5 h-4.5" strokeWidth={2} />
+                </button>
+              </>
             )}
           </div>
 
@@ -60,7 +103,7 @@ export default function Navbar({ variant = 'public' }: NavbarProps) {
       </div>
 
       {mobileOpen && (
-        <div className="md:hidden border-t-2 border-foreground bg-cream px-4 py-4 space-y-3">
+        <div className="md:hidden border-t-2 border-foreground bg-cream px-4 py-4 space-y-2">
           {variant === 'public' && !user && (
             <>
               <Link
@@ -79,7 +122,7 @@ export default function Navbar({ variant = 'public' }: NavbarProps) {
               </Link>
             </>
           )}
-          {(variant === 'public' && user) && (
+          {variant === 'public' && user && (
             <Link
               to="/dashboard"
               onClick={() => setMobileOpen(false)}
@@ -87,6 +130,51 @@ export default function Navbar({ variant = 'public' }: NavbarProps) {
             >
               Dashboard
             </Link>
+          )}
+          {variant === 'authenticated' && (
+            <>
+              <Link
+                to="/dashboard"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-foreground hover:bg-slate-100 transition-colors"
+              >
+                <LayoutDashboard className="w-5 h-5" />
+                Dashboard
+              </Link>
+              <Link
+                to="/courses"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-foreground hover:bg-slate-100 transition-colors"
+              >
+                <BookOpen className="w-5 h-5" />
+                Courses
+              </Link>
+              <Link
+                to="/leaderboard"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-foreground hover:bg-slate-100 transition-colors"
+              >
+                <Trophy className="w-5 h-5" />
+                Leaderboard
+              </Link>
+              <Link
+                to="/settings"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg font-bold text-foreground hover:bg-slate-100 transition-colors"
+              >
+                <Settings className="w-5 h-5" />
+                Settings
+              </Link>
+              <div className="border-t-2 border-slate-200 pt-2 mt-2">
+                <button
+                  onClick={() => { setMobileOpen(false); handleSignOut(); }}
+                  className="flex items-center gap-3 w-full px-4 py-3 rounded-lg font-bold text-red-600 hover:bg-red-50 transition-colors"
+                >
+                  <LogOut className="w-5 h-5" />
+                  Sign Out
+                </button>
+              </div>
+            </>
           )}
         </div>
       )}
