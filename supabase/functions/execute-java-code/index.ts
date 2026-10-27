@@ -200,6 +200,9 @@ async function executeJavaCode(
   maxMemoryMb: number
 ): Promise<ExecutionResult> {
   const startTime = Date.now();
+  // The limit comes from the lessons table; clamp it to a sane integer
+  // rather than trusting it straight into a JVM flag.
+  const safeMemoryMb = Math.min(Math.max(Math.trunc(Number(maxMemoryMb)) || 512, 64), 1024);
 
   // Security check: scan for dangerous patterns
   const dangerousPatterns = [
@@ -302,29 +305,23 @@ async function executeJavaCode(
         const inputData = testCase.input_data;
         const hasInput = inputData && inputData !== "[Hidden]" && inputData.trim().length > 0;
 
-        let runCommand;
-        if (hasInput) {
-          const inputFilePath = `${tempDir}/input.txt`;
-          await Deno.writeTextFile(inputFilePath, inputData);
-
-          // Run with input redirection
-          runCommand = new Deno.Command("sh", {
-            args: ["-c", `java -Xmx${maxMemoryMb}m ${className} < input.txt`],
-            cwd: tempDir,
-            stdout: "piped",
-            stderr: "piped",
-          });
-        } else {
-          runCommand = new Deno.Command("java", {
-            args: [`-Xmx${maxMemoryMb}m`, className],
-            cwd: tempDir,
-            stdout: "piped",
-            stderr: "piped",
-          });
-        }
+        // Run java directly (no shell) and feed test input through stdin.
+        // A shell would interpret anything interpolated into its command line.
+        const runCommand = new Deno.Command("java", {
+          args: [`-Xmx${safeMemoryMb}m`, className],
+          cwd: tempDir,
+          stdin: hasInput ? "piped" : "null",
+          stdout: "piped",
+          stderr: "piped",
+        });
 
         // Execute with timeout
         const runProcess = runCommand.spawn();
+        if (hasInput) {
+          const writer = runProcess.stdin.getWriter();
+          await writer.write(new TextEncoder().encode(inputData));
+          await writer.close();
+        }
         const timeoutId = setTimeout(() => {
           runProcess.kill("SIGKILL");
         }, testCase.timeout_seconds * 1000);

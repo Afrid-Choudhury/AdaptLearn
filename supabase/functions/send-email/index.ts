@@ -1,8 +1,9 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
 };
 
@@ -10,17 +11,19 @@ interface SendEmailRequest {
   to: string;
   subject: string;
   html: string;
-  text: string;
-  fromName?: string;
-  fromEmail?: string;
+  text?: string;
+}
+
+function jsonResponse(body: unknown, status: number): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
 }
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
-    return new Response(null, {
-      status: 200,
-      headers: corsHeaders,
-    });
+    return new Response(null, { status: 200, headers: corsHeaders });
   }
 
   try {
@@ -29,34 +32,49 @@ Deno.serve(async (req: Request) => {
       throw new Error("RESEND_API_KEY is not configured");
     }
 
-    const { to, subject, html, text, fromName, fromEmail }: SendEmailRequest = await req.json();
-
-    if (!to || !subject || !html) {
-      return new Response(
-        JSON.stringify({ error: "Missing required fields: to, subject, html" }),
-        {
-          status: 400,
-          headers: {
-            ...corsHeaders,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+    // Only a signed-in user may send, and only to their own address. Every
+    // email the app sends (welcome, achievements, reminders) goes to the
+    // current user, so this costs nothing — and without it, anyone holding
+    // the public anon key could send arbitrary mail through this account.
+    const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "");
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    if (authError || !user?.email) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
     }
 
-    const configuredFromEmail = Deno.env.get("EMAIL_FROM_ADDRESS") || "onboarding@resend.dev";
-    const configuredFromName = Deno.env.get("EMAIL_FROM_NAME") || "AdaptLearn";
+    const { to, subject, html, text }: SendEmailRequest = await req.json();
 
-    const finalFromName = fromName || configuredFromName;
-    const finalFromEmail = fromEmail || configuredFromEmail;
-    const fromAddress = `${finalFromName} <${finalFromEmail}>`;
+    if (!to || !subject || !html) {
+      return jsonResponse({ error: "Missing required fields: to, subject, html" }, 400);
+    }
 
-    const verifiedEmail = Deno.env.get("RESEND_VERIFIED_EMAIL") || "your-verified-email@example.com";
-    const isTestingMode = !Deno.env.get("EMAIL_FROM_ADDRESS") && resendApiKey.startsWith("re_");
-    const recipientEmail = isTestingMode ? verifiedEmail : to;
+    if (to.trim().toLowerCase() !== user.email.toLowerCase()) {
+      return jsonResponse({ error: "You can only send email to your own address" }, 403);
+    }
 
-    if (isTestingMode && to !== verifiedEmail) {
-      console.log(`Testing mode: Redirecting email from ${to} to ${verifiedEmail}`);
+    // The sender comes from server configuration only, never from the request.
+    const fromAddress = `${Deno.env.get("EMAIL_FROM_NAME") || "AdaptLearn"} <${
+      Deno.env.get("EMAIL_FROM_ADDRESS") || "onboarding@resend.dev"
+    }>`;
+
+    // Without a verified sending domain, Resend only delivers to the account
+    // owner's address, so in that "testing mode" mail is redirected there.
+    let recipientEmail = to;
+    let finalSubject = subject;
+    if (!Deno.env.get("EMAIL_FROM_ADDRESS")) {
+      const verifiedEmail = Deno.env.get("RESEND_VERIFIED_EMAIL");
+      if (!verifiedEmail) {
+        throw new Error("Set EMAIL_FROM_ADDRESS, or RESEND_VERIFIED_EMAIL for testing mode");
+      }
+      if (to !== verifiedEmail) {
+        console.log(`Testing mode: redirecting email for ${to} to the verified address`);
+        recipientEmail = verifiedEmail;
+        finalSubject = `[TEST for ${to}] ${subject}`;
+      }
     }
 
     const response = await fetch("https://api.resend.com/emails", {
@@ -68,10 +86,8 @@ Deno.serve(async (req: Request) => {
       body: JSON.stringify({
         from: fromAddress,
         to: [recipientEmail],
-        subject: isTestingMode && to !== verifiedEmail
-          ? `[TEST for ${to}] ${subject}`
-          : subject,
-        html: html,
+        subject: finalSubject,
+        html,
         text: text || undefined,
       }),
     });
@@ -83,27 +99,12 @@ Deno.serve(async (req: Request) => {
       throw new Error(data.message || "Failed to send email");
     }
 
-    return new Response(
-      JSON.stringify({ success: true, id: data.id }),
-      {
-        status: 200,
-        headers: {
-          ...corsHeaders,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    return jsonResponse({ success: true, id: data.id }, 200);
   } catch (error) {
     console.error("Error sending email:", error);
-    return new Response(
-      JSON.stringify({ error: error.message || "Internal server error" }),
-      {
-        status: 500,
-        headers: {
-          ...corsHeaders,
-          "Content-Type": "application/json",
-        },
-      }
+    return jsonResponse(
+      { error: error instanceof Error ? error.message : "Internal server error" },
+      500,
     );
   }
 });
