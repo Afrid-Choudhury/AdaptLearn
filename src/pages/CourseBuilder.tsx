@@ -11,7 +11,7 @@ export default function CourseBuilder() {
   const { user } = useAuth();
   const { isAdminOrInstructor, loading: roleLoading } = useUserRole();
   const { courseDetails, loading: courseLoading } = useCourseDetails(courseId === 'new' ? undefined : courseId);
-  const { createCourse, updateCourse, createModule, updateModule, deleteModule, createLesson, updateLesson, deleteLesson, loading: saving } = useCourseManagement();
+  const { createCourse, updateCourse, createModule, deleteModule, createLesson, deleteLesson, loading: saving } = useCourseManagement();
   const navigate = useNavigate();
 
   const isNewCourse = courseId === 'new';
@@ -26,7 +26,6 @@ export default function CourseBuilder() {
   const [expandedModules, setExpandedModules] = useState<Set<string>>(new Set());
   const [showAddModule, setShowAddModule] = useState(false);
   const [newModule, setNewModule] = useState({ title: '', description: '', estimated_minutes: 60, learning_objectives: [''] });
-  const [editingModuleId, setEditingModuleId] = useState<string | null>(null);
 
   const [showAddLesson, setShowAddLesson] = useState<string | null>(null);
   const [newLesson, setNewLesson] = useState({

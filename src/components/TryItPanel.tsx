@@ -5,7 +5,7 @@ import { CourseLesson } from '../lib/database.types';
 import { validateCode, ValidationResult } from '../lib/code-validator';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { useCodeExecution, ExecutionResult } from '../hooks/useCodeExecution';
+import { useCodeExecution } from '../hooks/useCodeExecution';
 import SubmissionHistory from './SubmissionHistory';
 
 interface TryItPanelProps {

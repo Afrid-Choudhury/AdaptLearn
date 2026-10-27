@@ -33,6 +33,7 @@ export default function Unsubscribe() {
   }, [token]);
 
   const fetchPreferences = async () => {
+    if (!token) return;
     try {
       const { data, error: fetchError } = await supabase
         .from('user_notification_preferences')

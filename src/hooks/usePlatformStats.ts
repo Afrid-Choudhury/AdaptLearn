@@ -16,10 +16,12 @@ export function usePlatformStats() {
       const { data, error } = await supabase.rpc('get_platform_stats');
 
       if (!error && data) {
+        // get_platform_stats returns a json object (see its migration).
+        const stats = data as { total_users: number; avg_rating: number; completion_rate: number };
         setStats({
-          totalUsers: data.total_users,
-          avgRating: data.avg_rating,
-          completionRate: data.completion_rate,
+          totalUsers: stats.total_users,
+          avgRating: stats.avg_rating,
+          completionRate: stats.completion_rate,
         });
       }
       setLoading(false);

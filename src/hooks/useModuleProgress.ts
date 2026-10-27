@@ -87,7 +87,7 @@ export function useModuleProgress(enrollmentId?: string) {
 
   const completeLesson = async (
     lessonId: string,
-    moduleId: string,
+    _moduleId: string,
     moduleProgressId: string,
     timeSpent: number = 0,
     xpReward: number = 100,
@@ -139,8 +139,8 @@ export function useModuleProgress(enrollmentId?: string) {
 
       if (enrollmentId) {
         await supabase.rpc('increment_enrollment_xp', {
-          p_enrollment_id: enrollmentId,
-          p_xp_amount: xpReward
+          enrollment_uuid: enrollmentId,
+          xp_amount: xpReward
         });
       }
 
@@ -158,8 +158,8 @@ export function useModuleProgress(enrollmentId?: string) {
 
       await supabase.rpc('check_completion_achievements', {
         p_user_id: user.id
-      }).catch(err => {
-        if (import.meta.env.DEV) {
+      }).then(({ error: err }) => {
+        if (err && import.meta.env.DEV) {
           console.error('Failed to check completion achievements:', err);
         }
       });

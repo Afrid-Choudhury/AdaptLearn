@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { CourseEnrollment } from '../lib/database.types';
 import { useAuth } from '../contexts/AuthContext';
-import { checkAndAwardAchievement } from '../lib/email-service';
 
 export function useEnrollments() {
   const { user } = useAuth();
@@ -59,15 +58,15 @@ export function useEnrollments() {
       if (error) throw error;
 
       await supabase.rpc('increment_course_student_count', {
-        p_course_id: courseId
+        course_uuid: courseId
       });
 
       setEnrollments(prev => [data, ...prev]);
 
       await supabase.rpc('check_enrollment_achievements', {
         p_user_id: user.id
-      }).catch(err => {
-        if (import.meta.env.DEV) {
+      }).then(({ error: err }) => {
+        if (err && import.meta.env.DEV) {
           console.error('Failed to check enrollment achievements:', err);
         }
       });
@@ -94,7 +93,7 @@ export function useEnrollments() {
       if (error) throw error;
 
       await supabase.rpc('decrement_course_student_count', {
-        p_course_id: courseId
+        course_uuid: courseId
       });
 
       setEnrollments(prev =>

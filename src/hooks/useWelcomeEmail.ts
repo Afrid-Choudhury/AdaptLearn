@@ -29,8 +29,8 @@ export function useWelcomeEmail() {
 
           supabase.rpc('check_all_achievements', {
             p_user_id: user.id
-          }).catch(err => {
-            if (import.meta.env.DEV) {
+          }).then(({ error: err }) => {
+            if (err && import.meta.env.DEV) {
               console.error('Failed to check achievements:', err);
             }
           });

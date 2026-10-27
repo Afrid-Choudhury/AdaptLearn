@@ -44,7 +44,12 @@ export default function SubmissionHistory({ lessonId }: SubmissionHistoryProps) 
 
       if (error) throw error;
 
-      setSubmissions(data || []);
+      setSubmissions(
+        (data || []).map((s) => ({
+          ...s,
+          test_results: Array.isArray(s.test_results) ? s.test_results : [],
+        }))
+      );
     } catch (err) {
       if (import.meta.env.DEV) {
         console.error('Error loading submissions:', err);

@@ -34,6 +34,7 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
       assessments: {
         Row: {
@@ -60,6 +61,7 @@ export interface Database {
           difficulty?: 'beginner' | 'intermediate' | 'advanced' | 'mixed';
           created_at?: string;
         };
+        Relationships: [];
       };
       assessment_questions: {
         Row: {
@@ -92,6 +94,7 @@ export interface Database {
           order_index?: number;
           created_at?: string;
         };
+        Relationships: [];
       };
       user_assessment_results: {
         Row: {
@@ -118,6 +121,7 @@ export interface Database {
           answers?: Json;
           completed_at?: string;
         };
+        Relationships: [];
       };
       courses: {
         Row: {
@@ -130,6 +134,8 @@ export interface Database {
           student_count: number;
           curriculum: Json | null;
           created_at: string;
+          prerequisites: Json;
+          learning_objectives: Json;
         };
         Insert: {
           id?: string;
@@ -141,6 +147,8 @@ export interface Database {
           student_count?: number;
           curriculum?: Json | null;
           created_at?: string;
+          prerequisites?: Json;
+          learning_objectives?: Json;
         };
         Update: {
           id?: string;
@@ -152,7 +160,10 @@ export interface Database {
           student_count?: number;
           curriculum?: Json | null;
           created_at?: string;
+          prerequisites?: Json;
+          learning_objectives?: Json;
         };
+        Relationships: [];
       };
       user_progress: {
         Row: {
@@ -182,6 +193,7 @@ export interface Database {
           last_accessed?: string;
           created_at?: string;
         };
+        Relationships: [];
       };
       course_enrollments: {
         Row: {
@@ -214,6 +226,7 @@ export interface Database {
           last_accessed?: string;
           total_xp?: number;
         };
+        Relationships: [];
       };
       course_modules: {
         Row: {
@@ -246,6 +259,7 @@ export interface Database {
           learning_objectives?: Json;
           created_at?: string;
         };
+        Relationships: [];
       };
       course_lessons: {
         Row: {
@@ -263,6 +277,10 @@ export interface Database {
           solution_code: string | null;
           xp_reward: number;
           created_at: string;
+          execution_enabled: boolean;
+          test_case_mode: 'output_match' | 'unit_test' | 'custom_validator';
+          max_execution_time: number;
+          max_memory_mb: number;
         };
         Insert: {
           id?: string;
@@ -279,6 +297,10 @@ export interface Database {
           solution_code?: string | null;
           xp_reward?: number;
           created_at?: string;
+          execution_enabled?: boolean;
+          test_case_mode?: 'output_match' | 'unit_test' | 'custom_validator';
+          max_execution_time?: number;
+          max_memory_mb?: number;
         };
         Update: {
           id?: string;
@@ -295,7 +317,12 @@ export interface Database {
           solution_code?: string | null;
           xp_reward?: number;
           created_at?: string;
+          execution_enabled?: boolean;
+          test_case_mode?: 'output_match' | 'unit_test' | 'custom_validator';
+          max_execution_time?: number;
+          max_memory_mb?: number;
         };
+        Relationships: [];
       };
       user_module_progress: {
         Row: {
@@ -334,6 +361,7 @@ export interface Database {
           completed_at?: string | null;
           last_accessed?: string;
         };
+        Relationships: [];
       };
       user_lesson_progress: {
         Row: {
@@ -372,6 +400,7 @@ export interface Database {
           completed_at?: string | null;
           last_accessed?: string;
         };
+        Relationships: [];
       };
       user_roles: {
         Row: {
@@ -395,6 +424,7 @@ export interface Database {
           created_at?: string;
           assigned_by?: string | null;
         };
+        Relationships: [];
       };
       lesson_code_drafts: {
         Row: {
@@ -421,8 +451,264 @@ export interface Database {
           last_saved_at?: string;
           created_at?: string;
         };
+        Relationships: [];
+      };
+      achievements: {
+        Row: {
+          id: string;
+          name: string;
+          description: string;
+          icon: string;
+          criteria_type: 'enrollment' | 'completion' | 'assessment_score' | 'streak' | 'custom';
+          criteria_value: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          description: string;
+          icon: string;
+          criteria_type: 'enrollment' | 'completion' | 'assessment_score' | 'streak' | 'custom';
+          criteria_value?: Json;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          description?: string;
+          icon?: string;
+          criteria_type?: 'enrollment' | 'completion' | 'assessment_score' | 'streak' | 'custom';
+          criteria_value?: Json;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      user_achievements: {
+        Row: {
+          id: string;
+          user_id: string;
+          achievement_id: string;
+          unlocked_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          achievement_id: string;
+          unlocked_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          achievement_id?: string;
+          unlocked_at?: string;
+        };
+        Relationships: [];
+      };
+      code_submissions: {
+        Row: {
+          id: string;
+          user_id: string;
+          lesson_id: string;
+          enrollment_id: string | null;
+          submitted_code: string;
+          execution_status: 'success' | 'compilation_error' | 'runtime_error' | 'timeout' | 'memory_exceeded' | 'security_violation';
+          compilation_errors: string | null;
+          stdout: string | null;
+          stderr: string | null;
+          execution_time_ms: number;
+          memory_used_kb: number;
+          test_results: Json;
+          passed_all_tests: boolean;
+          xp_awarded: number;
+          submitted_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          lesson_id: string;
+          enrollment_id?: string | null;
+          submitted_code: string;
+          execution_status: 'success' | 'compilation_error' | 'runtime_error' | 'timeout' | 'memory_exceeded' | 'security_violation';
+          compilation_errors?: string | null;
+          stdout?: string | null;
+          stderr?: string | null;
+          execution_time_ms?: number;
+          memory_used_kb?: number;
+          test_results?: Json;
+          passed_all_tests?: boolean;
+          xp_awarded?: number;
+          submitted_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          lesson_id?: string;
+          enrollment_id?: string | null;
+          submitted_code?: string;
+          execution_status?: 'success' | 'compilation_error' | 'runtime_error' | 'timeout' | 'memory_exceeded' | 'security_violation';
+          compilation_errors?: string | null;
+          stdout?: string | null;
+          stderr?: string | null;
+          execution_time_ms?: number;
+          memory_used_kb?: number;
+          test_results?: Json;
+          passed_all_tests?: boolean;
+          xp_awarded?: number;
+          submitted_at?: string;
+        };
+        Relationships: [];
+      };
+      email_log: {
+        Row: {
+          id: string;
+          user_id: string;
+          email_type: string;
+          recipient_email: string;
+          subject: string;
+          status: 'sent' | 'failed' | 'pending';
+          resend_id: string | null;
+          error_message: string | null;
+          sent_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          email_type: string;
+          recipient_email: string;
+          subject: string;
+          status?: 'sent' | 'failed' | 'pending';
+          resend_id?: string | null;
+          error_message?: string | null;
+          sent_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          email_type?: string;
+          recipient_email?: string;
+          subject?: string;
+          status?: 'sent' | 'failed' | 'pending';
+          resend_id?: string | null;
+          error_message?: string | null;
+          sent_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      lesson_test_cases: {
+        Row: {
+          id: string;
+          lesson_id: string;
+          test_case_number: number;
+          input_data: string;
+          expected_output: string;
+          is_hidden: boolean;
+          points: number;
+          timeout_seconds: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          lesson_id: string;
+          test_case_number: number;
+          input_data?: string;
+          expected_output: string;
+          is_hidden?: boolean;
+          points?: number;
+          timeout_seconds?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          lesson_id?: string;
+          test_case_number?: number;
+          input_data?: string;
+          expected_output?: string;
+          is_hidden?: boolean;
+          points?: number;
+          timeout_seconds?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      user_notification_preferences: {
+        Row: {
+          id: string;
+          user_id: string;
+          email_welcome: boolean;
+          email_password_recovery: boolean;
+          email_achievements: boolean;
+          email_assessment_reminder: boolean;
+          email_course_updates: boolean;
+          email_weekly_digest: boolean;
+          unsubscribe_token: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          email_welcome?: boolean;
+          email_password_recovery?: boolean;
+          email_achievements?: boolean;
+          email_assessment_reminder?: boolean;
+          email_course_updates?: boolean;
+          email_weekly_digest?: boolean;
+          unsubscribe_token?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          email_welcome?: boolean;
+          email_password_recovery?: boolean;
+          email_achievements?: boolean;
+          email_assessment_reminder?: boolean;
+          email_course_updates?: boolean;
+          email_weekly_digest?: boolean;
+          unsubscribe_token?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
       };
     };
+    // supabase-js v2 needs these keys (and Relationships on every table);
+    // without them every typed query resolves to `never`.
+    Views: { [_ in never]: never };
+    Functions: {
+      check_all_achievements: { Args: { p_user_id: string }; Returns: undefined };
+      check_assessment_achievements: { Args: { p_user_id: string; p_score: number }; Returns: undefined };
+      check_completion_achievements: { Args: { p_user_id: string }; Returns: undefined };
+      check_enrollment_achievements: { Args: { p_user_id: string }; Returns: undefined };
+      increment_course_student_count: { Args: { course_uuid: string }; Returns: undefined };
+      decrement_course_student_count: { Args: { course_uuid: string }; Returns: undefined };
+      increment_enrollment_xp: { Args: { enrollment_uuid: string; xp_amount: number }; Returns: undefined };
+      get_platform_stats: { Args: Record<PropertyKey, never>; Returns: Json };
+      get_leaderboard: {
+        Args: { p_limit?: number; p_offset?: number };
+        Returns: {
+          rank: number;
+          user_id: string;
+          username: string;
+          total_xp: number;
+          course_count: number;
+          completed_courses: number;
+        }[];
+      };
+      get_user_rank: {
+        Args: { p_user_id: string };
+        Returns: { rank: number; total_xp: number; course_count: number; completed_courses: number }[];
+      };
+    };
+    Enums: { [_ in never]: never };
+    CompositeTypes: { [_ in never]: never };
   };
 }
 

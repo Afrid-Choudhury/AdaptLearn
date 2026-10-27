@@ -11,14 +11,6 @@ interface Achievement {
   created_at: string;
 }
 
-interface UserAchievement {
-  id: string;
-  user_id: string;
-  achievement_id: string;
-  unlocked_at: string;
-  achievement: Achievement;
-}
-
 interface AchievementWithStatus extends Achievement {
   unlocked: boolean;
   unlocked_at?: string;

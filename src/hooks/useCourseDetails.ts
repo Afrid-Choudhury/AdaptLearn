@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { CourseWithDetails, CourseModule, CourseLesson, ModuleWithLessons } from '../lib/database.types';
+import { CourseWithDetails, CourseLesson, ModuleWithLessons } from '../lib/database.types';
+import { toCourseLesson } from '../lib/mappers';
 import { useAuth } from '../contexts/AuthContext';
 
 export function useCourseDetails(courseId: string | undefined) {
@@ -52,7 +53,7 @@ export function useCourseDetails(courseId: string | undefined) {
           .order('order_index', { ascending: true });
 
         if (lessonsError) throw lessonsError;
-        lessons = lessonsData || [];
+        lessons = (lessonsData || []).map(toCourseLesson);
       }
 
       const modulesWithLessons: ModuleWithLessons[] = (modules || []).map(module => ({

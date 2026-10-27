@@ -8,7 +8,10 @@ import { useUserRole } from '../hooks/useUserRole';
 import { useWelcomeEmail } from '../hooks/useWelcomeEmail';
 import { useAchievements } from '../hooks/useAchievements';
 import { supabase } from '../lib/supabase';
-import { Course } from '../lib/database.types';
+import { Course, CourseEnrollment } from '../lib/database.types';
+import { toCourse } from '../lib/mappers';
+
+type CourseWithEnrollment = Course & { enrollment?: CourseEnrollment };
 import AchievementBadge from '../components/AchievementBadge';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -23,7 +26,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [assessmentResult, setAssessmentResult] = useState<any>(null);
   const [loadingAssessment, setLoadingAssessment] = useState(true);
-  const [enrolledCourses, setEnrolledCourses] = useState<Course[]>([]);
+  const [enrolledCourses, setEnrolledCourses] = useState<CourseWithEnrollment[]>([]);
   const [totalXP, setTotalXP] = useState<number>(0);
 
   useEffect(() => {
@@ -108,8 +111,7 @@ export default function Dashboard() {
       const coursesWithEnrollment = (data || []).map(course => {
         const enrollment = enrollments.find(e => e.course_id === course.id);
         return {
-          ...course,
-          curriculum: course.curriculum as Course['curriculum'],
+          ...toCourse(course),
           enrollment,
         };
       });

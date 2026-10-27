@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import type { Database } from './database.types';
 import {
   generateWelcomeEmail,
   generatePasswordRecoveryEmail,
@@ -315,7 +316,7 @@ export async function getAllAchievements() {
 
 export async function checkAndAwardAchievement(
   userId: string,
-  criteriaType: string,
+  criteriaType: Database['public']['Tables']['achievements']['Row']['criteria_type'],
   criteriaValue: any
 ): Promise<string[]> {
   try {

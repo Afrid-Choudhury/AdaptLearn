@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { Course, SkillLevel } from '../lib/database.types';
+import { toCourse } from '../lib/mappers';
 
 export function useCourses(difficulty?: SkillLevel) {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -24,10 +25,7 @@ export function useCourses(difficulty?: SkillLevel) {
 
       if (error) throw error;
 
-      const typedCourses: Course[] = data.map(c => ({
-        ...c,
-        curriculum: c.curriculum as Course['curriculum'],
-      }));
+      const typedCourses: Course[] = data.map(toCourse);
 
       setCourses(typedCourses);
     } catch (err) {

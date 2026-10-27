@@ -15,7 +15,6 @@ import { useAssessment } from '../hooks/useAssessment';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
 import { UserAnswer, AssessmentQuestion } from '../lib/database.types';
-import { checkAndAwardAchievement } from '../lib/email-service';
 
 const ASSESSMENT_ID = '00000000-0000-0000-0000-000000000001';
 
@@ -294,7 +293,7 @@ export default function Assessment() {
         await supabase.rpc('check_assessment_achievements', {
           p_user_id: user.id,
           p_score: score
-        }).catch(() => {});
+        });
 
         navigate('/courses', { state: { score, answers: finalAnswers, timeTaken, questions } });
       } catch {

@@ -30,7 +30,7 @@ interface NotificationPreferences {
 
 export default function Settings() {
   const { user, signOut, updatePassword, deleteAccount } = useAuth();
-  const { profile, loading: profileLoading, refetch } = useProfile();
+  const { profile, refetch } = useProfile();
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState<'profile' | 'notifications' | 'security' | 'account'>('profile');

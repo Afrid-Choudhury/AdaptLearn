@@ -21,7 +21,7 @@ export default function LessonViewer() {
   const { courseDetails, loading } = useCourseDetails(courseId);
   const { getEnrollment, loading: enrollmentsLoading } = useEnrollments();
   const enrollment = getEnrollment(courseId || '');
-  const { moduleProgress, lessonProgress, startModule, completeLesson, getLessonProgress } = useModuleProgress(enrollment?.id);
+  const { moduleProgress, startModule, completeLesson, getLessonProgress } = useModuleProgress(enrollment?.id);
 
   const [currentLesson, setCurrentLesson] = useState<CourseLesson | null>(null);
   const [currentModule, setCurrentModule] = useState<ModuleWithLessons | null>(null);
